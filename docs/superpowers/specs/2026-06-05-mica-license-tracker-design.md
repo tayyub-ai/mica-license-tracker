@@ -10,11 +10,25 @@
 
 A free, public, premium-quality web tracker showing which crypto firms are (and aren't) **MiCA-licensed to operate in the EU**, anchored to the **1 July 2026** authorization deadline — built as a credibility asset and lead magnet.
 
-## 2. Why now (the hook)
+## 2. Why now (the hook) — verified regulatory facts
 
-MiCA (Markets in Crypto-Assets Regulation) became fully applicable on **30 Dec 2024**. Firms already operating under national regimes got a transitional "grandfathering" window under **MiCA Article 143** — a maximum of **18 months**, expiring **1 July 2026** (several member states shortened it). After that hard EU backstop, a firm without a MiCA license (CASP authorization) **cannot legally serve EU clients**.
+MiCA (Markets in Crypto-Assets Regulation) became fully applicable on **30 Dec 2024**. Firms already operating under national regimes got a transitional "grandfathering" window under **MiCA Article 143(3)**: they may continue operating until **1 July 2026 OR until their Article 63 authorization is granted/refused, whichever is sooner**. 1 July 2026 is the hard EU-wide ceiling — no member state may exceed it.
 
-As of today (June 2026), a large share of firms operating in the EU are still not authorized. A tracker that names who is and isn't licensed, with a live countdown, is timely, press-citable, and positions the owners as MiCA authorities.
+**Critically: member states could shorten (but not lengthen) their window**, and many did. The per-state periods from ESMA's official Article 143(3) list (source: ESMA official PDF, primary law):
+
+| Period | Member states |
+|---|---|
+| **6 months** (→ ~30 Jun 2025) | Latvia, Hungary, **Netherlands**, Poland*, Slovenia, Finland |
+| **9 months** (→ ~30 Sep 2025) | Sweden |
+| **12 months** (→ ~31 Dec 2025) | **Germany**, Ireland, Lithuania, Austria, Slovakia, Norway (EEA) |
+| **18 months** (→ 1 Jul 2026) | France, Spain, Italy†, Cyprus, Luxembourg, Malta, Belgium, and all others |
+
+\* Poland vetoed its own Crypto-Assets Market Act (Dec 2025), so it defaults to the EU-max 1 Jul 2026. The 6-month period listed was never enacted.
+† Italy's transitional operating end-date is **30 Jun 2026** (Decreto Legge 95/2025, in force 1 Jul 2025); 30 Dec 2025 is only Italy's application-filing deadline, not the operating-period end.
+
+Application-cutoff dates that differ from operating-period end-dates: Bulgaria (apply by 8 Oct 2025), Czechia (31 Jul 2025), Denmark (30 Dec 2024 — no transitional period at all), Italy (file by 30 Dec 2025 but operate until 30 Jun 2026).
+
+**The "at-risk" headline:** ~204 CASPs were authorized as of 22 May 2026 (ESMA register), versus ~2,747 legacy VASP registrations counted across Europe in 2024 (Coincub). That implies roughly **7–8% conversion** — defensibly "most firms still unlicensed." However, the denominator is contestable (includes dormant shell registrations, non-EU firms, entities that don't need CASP auth); the tracker should cite the explicit numerator/denominator and note the caveat rather than asserting a bare "80%+." Germany leads with ~53 authorized CASPs, Netherlands ~26, France and Poland trailing.
 
 ## 3. Audience & purpose
 
@@ -45,7 +59,12 @@ Accuracy is the product's whole value. Enforced **by the data model**, not by go
 - **Every status carries:** `source_url`, `source_type` (ESMA / NCA / firm / press), `last_verified` date, and a `confidence` flag (high / medium / reported).
 - **Public Methodology page:** explains the universe, sources, status definitions, the "not found = not authorized" framing, update cadence, and a **correction/dispute channel** (email) so named firms can request review. This is legal and reputational protection.
 - **"Not authorized" is always phrased as evidence-of-absence** ("not found on any EU register as of [date]"), never as an accusation of illegality.
-- **Authoritative sources:** ESMA registers (CASPs, ART/EMT issuers, white papers, non-compliant-entity warnings) + national competent authorities (BaFin, AMF, CySEC, Central Bank of Ireland, MFSA, etc.).
+- **Authoritative sources (primary, verified):**
+  - ESMA interim MiCA register: 5 weekly-updated CSV files (`CASPS.csv`, `ARTZZ.csv`, `EMTWP.csv`, `OTHER.csv`, `NCASP.csv`) at `esma.europa.eu/sites/default/files/2024-12/` — no public API yet; CSV-only until ESMA migrates to formal register IT systems (mid-2026, parser-migration risk).
+  - ESMA Article 93 competent-authorities PDF (master state → NCA mapping).
+  - ESMA non-compliant entities list (Articles 109/110) — useful for warning-label sourcing.
+  - Key NCAs: BaFin (DE) MiCAR hub, AFM (NL) crypto register, AMF (FR) GECO + CASP whitelist + warning list, CBI (IE), MFSA (MT), CySEC (CY), CSSF (LU), CNMV (ES), Bank of Italy/CONSOB (IT).
+  - Firm announcements and geoblock evidence for "Exited / restricting EU" status.
 - **Change history:** every status change is timestamped and shown on the firm's detail page and in a public changelog.
 
 ## 6. Features (premium scope)
@@ -88,9 +107,17 @@ Premium, editorial, trustworthy — closer to a respected policy institute / FT-
 - Cite-worthy: clean data, shareable embed, public API → press links and inbound.
 - Converts: visible email capture tied to the deadline urgency.
 
-## 11. Open questions
+## 11. Legal / reputational safety (verified best practice)
 
-- Initial watchlist size for launch (50 fast-launch vs 150 fuller) and the curation source list to seed it.
-- Email/ESP choice for alerts.
-- Domain name.
-- Whether to include UK/non-EU "for comparison" rows later (out of scope v1).
+- **Never assert illegality** — only assert register presence or absence: "not found in the ESMA MiCA CASP register as of [date]." Illegality assertions are actionable; evidence-of-absence statements are not.
+- **Disambiguate on legal entity identifier** (LEI or national registration number), not trading name — a trading name shared with a clone firm could defame the legitimate authorized entity.
+- **Published methodology + dispute/correction channel** with a review SLA, evidence requirements, and a change audit trail. Route formal corrections through counsel; a poorly worded retraction can be read as an admission of liability.
+- **"Not being on the list does NOT mean a firm is authorized"** — carry this explicit absence-of-evidence caveat to handle the inverse case cleanly.
+- ESMA itself models the right standard: it asserts authorization positively from the register and frames non-presence as "verify your provider is listed," never as a flat illegality claim.
+
+## 12. Open questions (resolved at design time)
+
+- Watchlist size: **150 firms** at launch. ✓
+- Purpose: **free lead magnet / credibility asset.** ✓
+- Architecture: **Next.js + Supabase + Vercel.** ✓
+- Remaining open: domain name, email/ESP provider for alerts, whether to add UK/non-EU comparison rows in v2.
