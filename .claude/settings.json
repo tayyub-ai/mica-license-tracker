@@ -79,5 +79,9 @@
       "Read(./**/.env.*)"
     ],
     "defaultMode": "acceptEdits"
+  },
+  "attribution": {
+    "commit": "",
+    "pr": ""
   }
 }
