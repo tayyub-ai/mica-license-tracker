@@ -40,7 +40,34 @@
       "Bash(uniq *)",
       "Bash(jq *)",
       "Bash(curl *)",
-      "Bash(open *)"
+      "Bash(open *)",
+      "Bash(chmod *)",
+      "Bash(sed *)",
+      "Bash(awk *)",
+      "Bash(grep *)",
+      "Bash(true)",
+      "Bash(false)",
+      "Bash(test *)",
+      "Bash(kill *)",
+      "Bash(pkill *)",
+      "Bash(ps *)",
+      "Bash(env *)",
+      "Bash(export *)",
+      "Bash(source *)",
+      "Bash(. *)",
+      "Bash(diff *)",
+      "Bash(zip *)",
+      "Bash(unzip *)",
+      "Bash(tar *)",
+      "Bash(brew *)",
+      "Bash(psql *)",
+      "Bash(pg_dump *)",
+      "Bash(ping *)",
+      "Bash(nvm *)",
+      "Bash(python *)",
+      "Bash(python3 *)",
+      "Bash(pip *)",
+      "Bash(pip3 *)"
     ],
     "deny": [
       "Bash(rm -rf /*)",
@@ -51,6 +78,6 @@
       "Read(./**/.env)",
       "Read(./**/.env.*)"
     ],
-    "defaultMode": "default"
+    "defaultMode": "acceptEdits"
   }
 }
