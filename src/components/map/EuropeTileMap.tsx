@@ -56,9 +56,11 @@ export function EuropeTileMap({ states }: { states: StateWithCount[] }) {
               style={{ gridRow: row + 1, gridColumn: col + 1, ...tileStyle(s.authorized_count, max) }}
               onMouseEnter={() => setHover(s)}
               onMouseLeave={() => setHover(null)}
+              onFocus={() => setHover(s)}
+              onBlur={() => setHover(null)}
               onClick={() => router.push(`/firms?state=${code}`)}
-              className="aspect-square rounded-sm border text-center flex flex-col items-center justify-center transition-all hover:scale-[1.08] hover:z-10 hover:shadow-md cursor-pointer"
-              title={`${s.name}: ${s.authorized_count} authorized`}
+              className="press aspect-square rounded-sm border text-center flex flex-col items-center justify-center hover:scale-[1.08] hover:z-10 hover:shadow-md cursor-pointer"
+              aria-label={`${s.name}: ${s.authorized_count} authorized firms. Filter registry.`}
             >
               <span className="cd-cell text-[11px] font-semibold leading-none">{code}</span>
               <span className="cd-cell text-[10px] leading-none mt-0.5 tnum opacity-90">{s.authorized_count}</span>

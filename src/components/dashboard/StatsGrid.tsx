@@ -12,7 +12,10 @@ function StatCard({
   rule: string
 }) {
   return (
-    <div className="card-paper rounded-sm p-5" style={{ borderTopWidth: 2, borderTopColor: rule }}>
+    <div
+      className="card-paper rounded-sm p-5 transition-colors hover:bg-paper-2"
+      style={{ borderTopWidth: 2, borderTopColor: rule }}
+    >
       <p className="eyebrow mb-3">{label}</p>
       <p className="cd-cell text-4xl font-semibold tnum" style={{ color: accent }}>
         {value}

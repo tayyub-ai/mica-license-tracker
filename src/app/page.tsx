@@ -59,7 +59,7 @@ export default function HomePage() {
         <div className="grid lg:grid-cols-12 gap-10 lg:gap-12 items-start">
           {/* Headline column */}
           <div className="lg:col-span-7">
-            <div className="flex items-center gap-3 mb-6">
+            <div className="flex items-center gap-3 mb-6 reveal" style={{ ['--reveal-delay' as string]: '0ms' }}>
               <span className="eyebrow">EU MiCA · Article 143(3)</span>
               <span className="h-px flex-1 bg-rule" />
               <span className="eyebrow flex items-center gap-1.5">
@@ -67,26 +67,26 @@ export default function HomePage() {
               </span>
             </div>
 
-            <h1 className="font-display text-5xl md:text-7xl font-semibold leading-[0.98] tracking-tight text-ink">
+            <h1 className="font-display text-5xl md:text-7xl font-semibold leading-[0.98] tracking-tight text-ink reveal" style={{ ['--reveal-delay' as string]: '80ms' }}>
               Which crypto firms are
               <span className="italic text-oxblood"> licensed </span>
               to operate in the EU?
             </h1>
 
-            <p className="mt-7 text-lg text-ink-soft leading-relaxed max-w-xl">
+            <p className="mt-7 text-lg text-ink-soft leading-relaxed max-w-xl reveal" style={{ ['--reveal-delay' as string]: '180ms' }}>
               MiCA's transitional window shuts on <strong className="text-ink">1 July 2026</strong>. Firms without a
               CASP authorization must leave the EU market. We track every named firm's status — sourced directly from
               the <span className="text-ink">ESMA register</span> and national authorities.
             </p>
 
-            <div className="mt-8 max-w-md">
+            <div className="mt-8 max-w-md reveal" style={{ ['--reveal-delay' as string]: '280ms' }}>
               <p className="eyebrow mb-2">Get alerts when a firm's status changes</p>
               <EmailCapture variant="compact" />
             </div>
           </div>
 
           {/* Countdown column */}
-          <div className="lg:col-span-5 lg:pt-4">
+          <div className="lg:col-span-5 lg:pt-4 reveal" style={{ ['--reveal-delay' as string]: '380ms' }}>
             <div className="lg:border-l lg:border-rule lg:pl-10">
               <p className="eyebrow mb-4">Time remaining until the deadline</p>
               <Suspense fallback={<div className="h-28" />}>
@@ -152,8 +152,8 @@ export default function HomePage() {
               body: 'ESMA publishes updates weekly. We ingest the diff and surface changes for human review before anything is published.',
             },
           ].map((c) => (
-            <div key={c.n} className="bg-paper p-7">
-              <p className="cd-cell text-oxblood text-sm mb-4">{c.n}</p>
+            <div key={c.n} className="group bg-paper p-7 transition-colors hover:bg-paper-2">
+              <p className="cd-cell text-oxblood text-sm mb-4 transition-transform group-hover:translate-x-1">{c.n}</p>
               <h3 className="font-display text-xl font-semibold text-ink mb-2">{c.title}</h3>
               <p className="text-sm text-ink-soft leading-relaxed">{c.body}</p>
             </div>

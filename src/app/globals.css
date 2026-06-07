@@ -55,6 +55,31 @@
   html {
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+    scroll-behavior: smooth;
+  }
+
+  /* Accessible focus — oxblood ring, never removed */
+  :focus-visible {
+    outline: 2px solid var(--oxblood);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  /* Skip link for keyboard users */
+  .skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 100;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 10px 16px;
+    border-radius: 4px;
+    font-size: 0.875rem;
+  }
+  .skip-link:focus {
+    left: 12px;
+    top: 12px;
   }
   body {
     background-color: var(--paper);
@@ -111,4 +136,35 @@
 .cd-cell {
   font-family: var(--font-plex-mono), monospace;
   font-variant-numeric: tabular-nums;
+}
+
+/* ===== Motion: staggered page-load reveals ===== */
+@keyframes reveal-up {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.reveal {
+  opacity: 0;
+  animation: reveal-up 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: var(--reveal-delay, 0ms);
+}
+
+/* Interactive press feedback */
+.press {
+  transition: transform 0.12s ease-out, background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+}
+.press:active {
+  transform: scale(0.97);
+}
+
+/* Honor reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal { opacity: 1; transform: none; }
 }

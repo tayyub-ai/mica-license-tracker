@@ -45,8 +45,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${fraunces.variable} ${hanken.variable} ${plexMono.variable}`}>
       <body className="bg-paper text-ink antialiased">
+        <a href="#main" className="skip-link">Skip to content</a>
         <Header />
-        <main>{children}</main>
+        <main id="main">{children}</main>
         <Footer />
       </body>
     </html>

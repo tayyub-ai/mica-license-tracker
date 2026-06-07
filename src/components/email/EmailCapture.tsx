@@ -39,18 +39,21 @@ export function EmailCapture({ variant = 'default' }: { variant?: 'default' | 'c
 
   return (
     <form onSubmit={handleSubmit} className={variant === 'compact' ? 'flex gap-2' : 'flex flex-col gap-3'}>
+      <label htmlFor="email-capture" className="sr-only">Email address</label>
       <input
+        id="email-capture"
         type="email"
         required
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         placeholder="you@firm.eu"
+        autoComplete="email"
         className="flex-1 px-4 py-2.5 rounded-sm bg-paper border border-rule-bold/30 text-ink placeholder-ink-faint focus:outline-none focus:border-oxblood text-sm transition-colors"
       />
       <button
         type="submit"
         disabled={state === 'loading'}
-        className="px-6 py-2.5 rounded-sm bg-ink text-paper text-sm font-semibold hover:bg-oxblood disabled:opacity-50 transition-colors whitespace-nowrap"
+        className="press px-6 py-2.5 rounded-sm bg-ink text-paper text-sm font-semibold hover:bg-oxblood disabled:opacity-50 whitespace-nowrap"
       >
         {state === 'loading' ? 'Signing up…' : 'Get alerts'}
       </button>

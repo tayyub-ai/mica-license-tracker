@@ -94,7 +94,8 @@
       "Read(//usr/bin/**)",
       "Bash(SEED_SUPABASE_SECRET=* node *)",
       "Bash(/usr/bin/curl -s http://localhost:3000/)",
-      "Bash(cd /Users/tayyub/mica-license-tracker *)"
+      "Bash(cd /Users/tayyub/mica-license-tracker *)",
+      "Bash(lsof -ti:3000)"
     ],
     "deny": [
       "Bash(rm -rf /*)",
