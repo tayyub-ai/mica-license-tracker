@@ -23,7 +23,7 @@ export default async function EditFirmPage({ params }: Props) {
 
   return (
     <div className="max-w-2xl space-y-6">
-      <h1 className="text-xl font-bold text-white">Edit: {firm.trading_name}</h1>
+      <h1 className="text-xl font-bold text-ink">Edit: {firm.trading_name}</h1>
       <FirmForm
         initialFirmId={firm.id}
         initialValues={{

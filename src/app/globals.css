@@ -1,26 +1,114 @@
 @import "tailwindcss";
 
+/*
+  MiCA License Tracker — "Regulatory Broadsheet"
+  An FT-style editorial data product. Warm paper, ink type, oxblood accent.
+*/
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Paper & ink */
+  --paper:        #FBF3EA;  /* warm broadsheet stock */
+  --paper-2:      #F4E9DA;  /* slightly deeper panel */
+  --paper-3:      #EFE2D0;  /* inset / table stripe */
+  --ink:          #1C1A17;  /* near-black warm */
+  --ink-soft:     #4A443C;  /* secondary text */
+  --ink-faint:    #8A8073;  /* tertiary / captions */
+  --rule:         #D9CBB6;  /* hairline rules */
+  --rule-bold:    #2A2620;  /* editorial heavy rule */
+
+  /* Accents */
+  --oxblood:      #A8200D;  /* AT-RISK — the emotional anchor */
+  --oxblood-deep: #7E1707;
+  --forest:       #1C6B4C;  /* authorized */
+  --forest-soft:  #2E8B66;
+  --ochre:        #B5830F;  /* pending */
+  --slate:        #5B6670;  /* exited / neutral */
+  --indigo:       #2E5A8F;  /* out of scope */
+
+  --background: var(--paper);
+  --foreground: var(--ink);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-paper: var(--paper);
+  --color-paper-2: var(--paper-2);
+  --color-paper-3: var(--paper-3);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-faint: var(--ink-faint);
+  --color-rule: var(--rule);
+  --color-rule-bold: var(--rule-bold);
+  --color-oxblood: var(--oxblood);
+  --color-oxblood-deep: var(--oxblood-deep);
+  --color-forest: var(--forest);
+  --color-forest-soft: var(--forest-soft);
+  --color-ochre: var(--ochre);
+  --color-slate: var(--slate);
+  --color-indigo: var(--indigo);
+
+  --font-display: var(--font-fraunces);
+  --font-sans: var(--font-hanken);
+  --font-mono: var(--font-plex-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    background-color: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-hanken), ui-sans-serif, system-ui, sans-serif;
+    /* faint paper grain */
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(28, 26, 23, 0.022) 1px, transparent 0);
+    background-size: 4px 4px;
+  }
+
+  ::selection {
+    background: var(--oxblood);
+    color: var(--paper);
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-fraunces), Georgia, serif;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  /* Tabular figures everywhere data appears */
+  .tnum { font-variant-numeric: tabular-nums; }
+}
+
+@layer components {
+  /* Editorial eyebrow label */
+  .eyebrow {
+    font-family: var(--font-plex-mono), monospace;
+    font-size: 0.6875rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  /* Hairline */
+  .rule { border-color: var(--rule); }
+
+  /* Paper card */
+  .card-paper {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    box-shadow: 0 1px 0 rgba(255,255,255,0.6) inset, 0 1px 2px rgba(28,26,23,0.04);
+  }
+
+  /* Heavy top rule like a newspaper masthead section */
+  .section-rule {
+    border-top: 2px solid var(--rule-bold);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Countdown flip-style cells use mono + ink */
+.cd-cell {
+  font-family: var(--font-plex-mono), monospace;
+  font-variant-numeric: tabular-nums;
 }

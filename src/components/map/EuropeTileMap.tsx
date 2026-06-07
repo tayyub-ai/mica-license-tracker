@@ -16,13 +16,17 @@ const GRID: Record<string, [number, number]> = {
   MT: [7, 4], GR: [7, 7], CY: [7, 9],
 }
 
-function colorFor(count: number, max: number): string {
-  if (count === 0) return 'bg-zinc-800 text-zinc-600 border-zinc-700'
+function tileStyle(count: number, max: number): React.CSSProperties {
+  if (count === 0) {
+    return { background: 'var(--paper-3)', color: 'var(--ink-faint)', borderColor: 'var(--rule)' }
+  }
   const t = count / max
-  if (t > 0.66) return 'bg-emerald-500 text-emerald-950 border-emerald-400'
-  if (t > 0.33) return 'bg-emerald-600/80 text-emerald-50 border-emerald-500'
-  if (t > 0.12) return 'bg-emerald-700/70 text-emerald-100 border-emerald-600'
-  return 'bg-emerald-800/50 text-emerald-200 border-emerald-700'
+  const pct = Math.round((0.16 + t * 0.78) * 100)
+  return {
+    background: `color-mix(in srgb, var(--forest) ${pct}%, var(--paper))`,
+    color: t > 0.42 ? 'var(--paper)' : 'var(--ink)',
+    borderColor: `color-mix(in srgb, var(--forest) ${Math.min(100, pct + 12)}%, var(--rule))`,
+  }
 }
 
 export function EuropeTileMap({ states }: { states: StateWithCount[] }) {
@@ -35,7 +39,7 @@ export function EuropeTileMap({ states }: { states: StateWithCount[] }) {
   const maxCol = Math.max(...Object.values(GRID).map(([, c]) => c))
 
   return (
-    <div className="grid lg:grid-cols-[1fr_280px] gap-6 items-start">
+    <div className="grid lg:grid-cols-[1fr_300px] gap-7 items-start">
       <div
         className="grid gap-1.5"
         style={{
@@ -49,73 +53,67 @@ export function EuropeTileMap({ states }: { states: StateWithCount[] }) {
           return (
             <button
               key={code}
-              style={{ gridRow: row + 1, gridColumn: col + 1 }}
+              style={{ gridRow: row + 1, gridColumn: col + 1, ...tileStyle(s.authorized_count, max) }}
               onMouseEnter={() => setHover(s)}
               onMouseLeave={() => setHover(null)}
               onClick={() => router.push(`/firms?state=${code}`)}
-              className={`aspect-square rounded-md border text-center flex flex-col items-center justify-center transition-all hover:scale-105 hover:z-10 hover:ring-2 hover:ring-white/30 ${colorFor(
-                s.authorized_count,
-                max
-              )}`}
+              className="aspect-square rounded-sm border text-center flex flex-col items-center justify-center transition-all hover:scale-[1.08] hover:z-10 hover:shadow-md cursor-pointer"
               title={`${s.name}: ${s.authorized_count} authorized`}
             >
-              <span className="text-[11px] font-bold leading-none">{code}</span>
-              <span className="text-[10px] leading-none mt-0.5 tabular-nums opacity-80">
-                {s.authorized_count}
-              </span>
+              <span className="cd-cell text-[11px] font-semibold leading-none">{code}</span>
+              <span className="cd-cell text-[10px] leading-none mt-0.5 tnum opacity-90">{s.authorized_count}</span>
             </button>
           )
         })}
       </div>
 
       {/* Info panel */}
-      <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-5 min-h-[160px] lg:sticky lg:top-20">
+      <div className="card-paper rounded-sm p-6 min-h-[180px] lg:sticky lg:top-20">
         {hover ? (
-          <div className="space-y-3">
+          <div className="space-y-4">
             <div>
-              <p className="text-lg font-bold text-white">{hover.name}</p>
-              <p className="text-xs text-zinc-500">{hover.code}{hover.notes?.includes('EEA') ? ' · EEA' : ' · EU'}</p>
+              <p className="font-display text-2xl font-semibold text-ink leading-tight">{hover.name}</p>
+              <p className="eyebrow mt-1">{hover.code} · {hover.notes?.includes('EEA') ? 'EEA' : 'EU'}</p>
             </div>
-            <div className="grid grid-cols-2 gap-3 text-sm">
+            <div className="grid grid-cols-2 gap-4">
               <div>
-                <p className="text-zinc-500 text-xs">Authorized</p>
-                <p className="text-emerald-400 font-bold text-xl tabular-nums">{hover.authorized_count}</p>
+                <p className="eyebrow mb-1">Authorized</p>
+                <p className="cd-cell text-3xl font-semibold tnum text-forest">{hover.authorized_count}</p>
               </div>
               <div>
-                <p className="text-zinc-500 text-xs">Tracked firms</p>
-                <p className="text-white font-bold text-xl tabular-nums">{hover.total_count}</p>
+                <p className="eyebrow mb-1">Tracked</p>
+                <p className="cd-cell text-3xl font-semibold tnum text-ink">{hover.total_count}</p>
               </div>
             </div>
-            <div className="border-t border-zinc-800 pt-3 text-xs space-y-1">
-              <p className="text-zinc-500">
+            <div className="border-t border-rule pt-3 space-y-1.5">
+              <p className="text-sm text-ink-soft">
                 Transitional window:{' '}
-                <span className="text-zinc-300">
+                <span className="text-ink font-medium">
                   {hover.transitional_months ? `${hover.transitional_months} months` : 'None'}
                 </span>
               </p>
-              <p className="text-zinc-500">
+              <p className="text-sm text-ink-soft">
                 Ends:{' '}
-                <span className="text-zinc-300">
+                <span className="cd-cell text-ink">
                   {hover.transitional_end_date
                     ? new Date(hover.transitional_end_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
                     : '—'}
                 </span>
               </p>
-              {hover.notes && <p className="text-zinc-600 leading-relaxed mt-2">{hover.notes}</p>}
+              {hover.notes && <p className="text-xs text-ink-faint leading-relaxed pt-1">{hover.notes}</p>}
             </div>
-            <p className="text-xs text-zinc-500">Click to filter the registry →</p>
+            <p className="eyebrow text-oxblood">Click to filter registry →</p>
           </div>
         ) : (
-          <div className="text-sm text-zinc-500 space-y-3">
-            <p className="font-medium text-zinc-300">EU-27 + EEA authorization map</p>
-            <p>Hover a state to see its authorized-firm count and transitional deadline. Click to filter the registry.</p>
+          <div className="space-y-4">
+            <p className="font-display text-lg font-semibold text-ink">EU-27 + EEA register</p>
+            <p className="text-sm text-ink-soft leading-relaxed">
+              Hover a state for its authorized-firm count and transitional deadline. Click to filter the registry.
+            </p>
             <div className="flex items-center gap-2 pt-2">
-              <span className="w-4 h-4 rounded bg-zinc-800 border border-zinc-700" />
-              <span className="text-xs">0</span>
-              <span className="w-4 h-4 rounded bg-emerald-800/50 border border-emerald-700 ml-2" />
-              <span className="w-4 h-4 rounded bg-emerald-600/80 border border-emerald-500" />
-              <span className="w-4 h-4 rounded bg-emerald-500 border border-emerald-400" />
-              <span className="text-xs">more authorized</span>
+              <span className="eyebrow">Fewer</span>
+              <span className="flex-1 h-2 rounded-sm" style={{ background: 'linear-gradient(90deg, var(--paper-3), var(--forest))' }} />
+              <span className="eyebrow">More</span>
             </div>
           </div>
         )}

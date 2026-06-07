@@ -2,25 +2,33 @@ import Link from 'next/link'
 
 export function Header() {
   return (
-    <header className="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur-sm sticky top-0 z-40">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2.5">
-          <span className="text-white font-bold text-lg tracking-tight">MiCA Tracker</span>
-          <span className="text-xs bg-amber-500/20 text-amber-400 border border-amber-500/30 px-2 py-0.5 rounded-full font-medium">
-            Live
-          </span>
-        </Link>
-        <nav className="flex items-center gap-6">
-          <Link href="/firms" className="text-sm text-zinc-400 hover:text-white transition-colors">
-            Registry
+    <header className="sticky top-0 z-40 bg-paper/90 backdrop-blur-sm border-b border-rule-bold">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="h-16 flex items-center justify-between">
+          <Link href="/" className="group flex items-baseline gap-3">
+            <span className="font-display text-2xl font-semibold tracking-tight text-ink">
+              MiCA<span className="text-oxblood">·</span>Tracker
+            </span>
+            <span className="hidden sm:inline eyebrow text-[10px] border border-rule px-2 py-0.5 rounded-sm group-hover:border-oxblood transition-colors">
+              EU Register Watch
+            </span>
           </Link>
-          <Link href="/changelog" className="text-sm text-zinc-400 hover:text-white transition-colors">
-            Changelog
-          </Link>
-          <Link href="/methodology" className="text-sm text-zinc-400 hover:text-white transition-colors">
-            Methodology
-          </Link>
-        </nav>
+          <nav className="flex items-center gap-7">
+            {[
+              ['Registry', '/firms'],
+              ['Changelog', '/changelog'],
+              ['Methodology', '/methodology'],
+            ].map(([label, href]) => (
+              <Link
+                key={href}
+                href={href}
+                className="text-sm font-medium text-ink-soft hover:text-oxblood transition-colors relative after:absolute after:left-0 after:-bottom-1 after:h-px after:w-0 after:bg-oxblood hover:after:w-full after:transition-all"
+              >
+                {label}
+              </Link>
+            ))}
+          </nav>
+        </div>
       </div>
     </header>
   )

@@ -16,18 +16,19 @@ export async function GET(req: Request) {
 <title>MiCA Tracker Widget</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
-  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; background:#09090b; color:#fff; padding:20px; }
-  .card { border:1px solid #27272a; border-radius:14px; padding:20px; background:linear-gradient(180deg,#18181b,#09090b); }
-  .label { font-size:11px; text-transform:uppercase; letter-spacing:.15em; color:#a1a1aa; }
-  .count { font-size:34px; font-weight:800; font-variant-numeric:tabular-nums; margin:6px 0; }
-  .count .total { color:#52525b; font-size:20px; }
-  .green { color:#34d399; }
-  .cd { display:flex; gap:14px; margin-top:14px; padding-top:14px; border-top:1px solid #27272a; }
+  body { font-family:ui-monospace,'SF Mono',Menlo,monospace; background:#FBF3EA; color:#1C1A17; padding:20px; }
+  .card { border:1px solid #D9CBB6; border-radius:4px; padding:20px; background:#FBF3EA; box-shadow:0 1px 2px rgba(28,26,23,.06); position:relative; overflow:hidden; }
+  .card:before { content:''; position:absolute; left:0; top:0; bottom:0; width:4px; background:#A8200D; }
+  .label { font-size:10px; text-transform:uppercase; letter-spacing:.2em; color:#8A8073; padding-left:8px; }
+  .count { font-size:34px; font-weight:600; font-variant-numeric:tabular-nums; margin:6px 0; padding-left:8px; }
+  .count .total { color:#8A8073; font-size:18px; font-weight:400; }
+  .green { color:#1C6B4C; }
+  .cd { display:flex; gap:14px; margin-top:14px; padding-top:14px; border-top:1px solid #D9CBB6; padding-left:8px; }
   .unit { text-align:center; }
-  .unit b { font-size:22px; font-variant-numeric:tabular-nums; display:block; }
-  .unit span { font-size:9px; text-transform:uppercase; letter-spacing:.1em; color:#71717a; }
-  a.foot { display:block; margin-top:14px; font-size:11px; color:#a1a1aa; text-decoration:none; }
-  a.foot:hover { color:#fff; }
+  .unit b { font-size:22px; font-variant-numeric:tabular-nums; display:block; font-weight:600; }
+  .unit span { font-size:9px; text-transform:uppercase; letter-spacing:.1em; color:#8A8073; }
+  a.foot { display:block; margin-top:14px; padding-left:8px; font-size:10px; letter-spacing:.04em; color:#8A8073; text-decoration:none; }
+  a.foot:hover { color:#A8200D; }
 </style>
 </head>
 <body>

@@ -15,45 +15,35 @@ export default function AdminLoginPage() {
     e.preventDefault()
     setError('')
     setLoading(true)
-
     const supabase = createClient()
     const { error: authError } = await supabase.auth.signInWithPassword({ email, password })
-
     if (authError) {
       setError(authError.message)
       setLoading(false)
       return
     }
-
     router.push('/admin')
+    router.refresh()
   }
 
+  const input =
+    'w-full px-4 py-2.5 rounded-sm bg-paper border border-rule-bold/25 text-ink placeholder-ink-faint focus:outline-none focus:border-oxblood text-sm transition-colors'
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-zinc-950 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-paper px-4">
       <div className="w-full max-w-sm">
-        <h1 className="text-2xl font-bold text-white mb-8 text-center">Admin Login</h1>
-        <form onSubmit={handleLogin} className="space-y-4">
-          <input
-            type="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email"
-            className="w-full px-4 py-2.5 rounded-lg bg-zinc-800 border border-zinc-700 text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-500 text-sm"
-          />
-          <input
-            type="password"
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-            className="w-full px-4 py-2.5 rounded-lg bg-zinc-800 border border-zinc-700 text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-500 text-sm"
-          />
-          {error && <p className="text-red-400 text-sm">{error}</p>}
+        <p className="eyebrow text-center mb-2">Curation Console</p>
+        <h1 className="font-display text-3xl font-semibold text-ink mb-8 text-center">
+          MiCA<span className="text-oxblood">·</span>Tracker Admin
+        </h1>
+        <form onSubmit={handleLogin} className="space-y-3 card-paper rounded-sm p-6">
+          <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" className={input} />
+          <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" className={input} />
+          {error && <p className="text-oxblood text-sm">{error}</p>}
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2.5 rounded-lg bg-white text-black font-semibold text-sm hover:bg-zinc-100 disabled:opacity-50 transition-colors"
+            className="w-full py-2.5 rounded-sm bg-ink text-paper font-semibold text-sm hover:bg-oxblood disabled:opacity-50 transition-colors"
           >
             {loading ? 'Logging in…' : 'Log in'}
           </button>

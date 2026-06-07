@@ -30,8 +30,9 @@ export function EmailCapture({ variant = 'default' }: { variant?: 'default' | 'c
 
   if (state === 'success') {
     return (
-      <p className="text-emerald-400 text-sm font-medium">
-        ✓ Check your inbox to confirm — you'll get status-change alerts and weekly digests.
+      <p className="text-forest text-sm font-medium flex items-center gap-2">
+        <span className="w-1.5 h-1.5 rounded-full bg-forest" />
+        Check your inbox to confirm — alerts &amp; weekly digests are on the way.
       </p>
     )
   }
@@ -43,19 +44,17 @@ export function EmailCapture({ variant = 'default' }: { variant?: 'default' | 'c
         required
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        placeholder="your@email.com"
-        className="flex-1 px-4 py-2.5 rounded-lg bg-zinc-800 border border-zinc-700 text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-500 text-sm"
+        placeholder="you@firm.eu"
+        className="flex-1 px-4 py-2.5 rounded-sm bg-paper border border-rule-bold/30 text-ink placeholder-ink-faint focus:outline-none focus:border-oxblood text-sm transition-colors"
       />
       <button
         type="submit"
         disabled={state === 'loading'}
-        className="px-6 py-2.5 rounded-lg bg-white text-black text-sm font-semibold hover:bg-zinc-100 disabled:opacity-50 transition-colors whitespace-nowrap"
+        className="px-6 py-2.5 rounded-sm bg-ink text-paper text-sm font-semibold hover:bg-oxblood disabled:opacity-50 transition-colors whitespace-nowrap"
       >
         {state === 'loading' ? 'Signing up…' : 'Get alerts'}
       </button>
-      {state === 'error' && (
-        <p className="text-red-400 text-xs">{errorMsg}</p>
-      )}
+      {state === 'error' && <p className="text-oxblood text-xs">{errorMsg}</p>}
     </form>
   )
 }

@@ -11,38 +11,34 @@ const SNIPPET = `<div id="mica-tracker-widget"></div>
 export default function EmbedPage() {
   return (
     <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <h1 className="text-3xl font-bold text-white mb-2">Embed the Widget</h1>
-      <p className="text-zinc-400 mb-10">
-        Add a live MiCA authorization counter and countdown to the 1 July 2026 deadline on your own
-        site, blog, or newsletter. Free to use — a link back is appreciated.
+      <p className="eyebrow mb-2">Open Data</p>
+      <h1 className="font-display text-4xl md:text-5xl font-semibold text-ink mb-3">Embed the Widget</h1>
+      <p className="text-ink-soft mb-10 text-lg">
+        Add a live MiCA authorization counter and countdown to the 1 July 2026 deadline on your own site, blog, or
+        newsletter. Free to use — a link back is appreciated.
       </p>
 
       <div className="space-y-8">
-        <section>
-          <h2 className="text-lg font-semibold text-white mb-3">Preview</h2>
-          <div className="rounded-xl border border-zinc-800 overflow-hidden bg-zinc-900/30 p-4">
-            <iframe
-              src="/widget"
-              title="MiCA Tracker widget preview"
-              className="w-full max-w-[360px] h-[210px] border-0 mx-auto block"
-            />
+        <section className="section-rule pt-5">
+          <h2 className="font-display text-2xl font-semibold text-ink mb-4">Preview</h2>
+          <div className="card-paper rounded-sm p-6 flex justify-center">
+            <iframe src="/widget" title="MiCA Tracker widget preview" className="w-full max-w-[360px] h-[210px] border-0" />
           </div>
         </section>
 
-        <section>
-          <h2 className="text-lg font-semibold text-white mb-3">Copy the snippet</h2>
-          <p className="text-sm text-zinc-500 mb-3">
+        <section className="section-rule pt-5">
+          <h2 className="font-display text-2xl font-semibold text-ink mb-3">Copy the snippet</h2>
+          <p className="text-sm text-ink-soft mb-3">
             Paste this anywhere in your HTML. The widget loads in an isolated iframe and updates automatically.
           </p>
-          <pre className="rounded-xl border border-zinc-800 bg-zinc-900 p-4 text-sm text-zinc-300 overflow-x-auto">
+          <pre className="rounded-sm border border-rule-bold/30 bg-ink text-paper p-4 text-sm overflow-x-auto cd-cell">
             <code>{SNIPPET}</code>
           </pre>
         </section>
 
-        <section className="text-sm text-zinc-500 leading-relaxed border-t border-zinc-800 pt-6">
-          The widget is read-only and pulls the same data as this site (authorized count, total tracked
-          firms, and the live countdown). It respects the visitor's network only — no tracking cookies are set.
-        </section>
+        <p className="text-sm text-ink-faint leading-relaxed border-t border-rule pt-6">
+          The widget is read-only and pulls the same data as this site. It sets no tracking cookies.
+        </p>
       </div>
     </div>
   )

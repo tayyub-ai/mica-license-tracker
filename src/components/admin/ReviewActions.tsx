@@ -18,7 +18,7 @@ export function ReviewActions({ reviewId }: { reviewId: string }) {
   }
 
   if (done) {
-    return <span className="text-xs text-emerald-400">✓ {done}</span>
+    return <span className="text-xs text-forest">✓ {done}</span>
   }
 
   return (
@@ -26,18 +26,18 @@ export function ReviewActions({ reviewId }: { reviewId: string }) {
       <button
         onClick={() => handle('approve')}
         disabled={pending}
-        className="text-xs bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-3 py-1.5 rounded-lg hover:bg-emerald-500/30 disabled:opacity-50 transition-colors"
+        className="text-xs bg-forest/15 text-forest border border-forest/40 px-3 py-1.5 rounded-lg hover:bg-forest/20 disabled:opacity-50 transition-colors"
       >
         {pending ? '…' : 'Approve → Authorized'}
       </button>
       <button
         onClick={() => handle('skip')}
         disabled={pending}
-        className="text-xs bg-zinc-800 text-zinc-400 border border-zinc-700 px-3 py-1.5 rounded-lg hover:bg-zinc-700 disabled:opacity-50 transition-colors"
+        className="text-xs bg-paper-3 text-ink-soft border border-rule px-3 py-1.5 rounded-lg hover:bg-paper-3 disabled:opacity-50 transition-colors"
       >
         Skip
       </button>
-      {error && <span className="text-xs text-red-400">{error}</span>}
+      {error && <span className="text-xs text-oxblood">{error}</span>}
     </div>
   )
 }

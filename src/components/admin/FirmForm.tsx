@@ -168,8 +168,8 @@ export function FirmForm({ initialFirmId, initialValues }: Props) {
     }
   }
 
-  const inputCls = 'w-full px-3 py-2 rounded-lg bg-zinc-800 border border-zinc-700 text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-500 text-sm'
-  const labelCls = 'block text-sm text-zinc-400 mb-1'
+  const inputCls = 'w-full px-3 py-2 rounded-lg bg-paper-3 border border-rule text-ink placeholder-ink-faint focus:outline-none focus:border-oxblood text-sm'
+  const labelCls = 'block text-sm text-ink-soft mb-1'
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
@@ -215,8 +215,8 @@ export function FirmForm({ initialFirmId, initialValues }: Props) {
         <input type="url" className={inputCls} value={values.website_url} onChange={(e) => set('website_url', e.target.value)} placeholder="https://..." />
       </div>
 
-      <hr className="border-zinc-800" />
-      <p className="text-sm font-medium text-zinc-300">Status (required fields)</p>
+      <hr className="border-rule" />
+      <p className="text-sm font-medium text-ink">Status (required fields)</p>
 
       <div className="grid grid-cols-2 gap-4">
         <div>
@@ -273,15 +273,15 @@ export function FirmForm({ initialFirmId, initialValues }: Props) {
         <textarea className={`${inputCls} resize-none`} rows={3} value={values.notes} onChange={(e) => set('notes', e.target.value)} />
       </div>
 
-      {error && <p className="text-red-400 text-sm">{error}</p>}
+      {error && <p className="text-oxblood text-sm">{error}</p>}
 
       <div className="flex gap-3 pt-2">
         <button type="submit" disabled={loading}
-          className="px-6 py-2.5 rounded-lg bg-white text-black font-semibold text-sm hover:bg-zinc-100 disabled:opacity-50 transition-colors">
+          className="px-6 py-2.5 rounded-lg bg-ink text-paper font-semibold text-sm hover:bg-oxblood disabled:opacity-50 transition-colors">
           {loading ? 'Saving…' : initialFirmId ? 'Save changes' : 'Add firm'}
         </button>
         <button type="button" onClick={() => router.back()}
-          className="px-6 py-2.5 rounded-lg border border-zinc-700 text-zinc-400 text-sm hover:text-white transition-colors">
+          className="px-6 py-2.5 rounded-lg border border-rule text-ink-soft text-sm hover:text-ink transition-colors">
           Cancel
         </button>
       </div>

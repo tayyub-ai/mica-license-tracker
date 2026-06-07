@@ -92,7 +92,9 @@
       "Bash(DATABASE_URL=* *)",
       "Bash(command -v curl)",
       "Read(//usr/bin/**)",
-      "Bash(SEED_SUPABASE_SECRET=* node *)"
+      "Bash(SEED_SUPABASE_SECRET=* node *)",
+      "Bash(/usr/bin/curl -s http://localhost:3000/)",
+      "Bash(cd /Users/tayyub/mica-license-tracker *)"
     ],
     "deny": [
       "Bash(rm -rf /*)",
@@ -103,6 +105,9 @@
       "Read(./**/.env)",
       "Read(./**/.env.*)"
     ],
-    "defaultMode": "acceptEdits"
+    "defaultMode": "acceptEdits",
+    "additionalDirectories": [
+      "/Users/tayyub/mica-license-tracker/src/app/admin/(protected)/firms/[id]"
+    ]
   }
 }

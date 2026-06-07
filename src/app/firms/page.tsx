@@ -28,7 +28,7 @@ export default async function FirmsPage({
           '@type': 'Dataset',
           name: 'EU MiCA Crypto Authorization Tracker',
           description:
-            'A curated registry of crypto firms and their MiCA (Markets in Crypto-Assets) authorization status in the EU, sourced from the ESMA interim register and national competent authorities.',
+            'A curated registry of crypto firms and their MiCA authorization status in the EU, sourced from the ESMA interim register and national competent authorities.',
           url: `${SITE_URL}/firms`,
           creator: { '@type': 'Organization', name: 'MiCA License Tracker' },
           license: 'https://creativecommons.org/licenses/by/4.0/',
@@ -38,29 +38,31 @@ export default async function FirmsPage({
             { '@type': 'DataDownload', encodingFormat: 'application/json', contentUrl: `${SITE_URL}/api/firms` },
             { '@type': 'DataDownload', encodingFormat: 'text/csv', contentUrl: `${SITE_URL}/api/export` },
           ],
-          variableMeasured: ['authorization status', 'home member state', 'last verified date', 'source'],
           numberOfItems: firms.length,
         }}
       />
-      <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+
+      <div className="section-rule pt-5 mb-9 flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2">Firm Registry</h1>
-          <p className="text-zinc-400">
-            {firms.length} named firms tracked. Every status sourced from ESMA or a national NCA register.
+          <p className="eyebrow mb-1.5">The Register</p>
+          <h1 className="font-display text-4xl md:text-5xl font-semibold text-ink">Firm Registry</h1>
+          <p className="mt-3 text-ink-soft max-w-xl">
+            <span className="cd-cell text-ink">{firms.length}</span> named firms tracked. Every status sourced from
+            ESMA or a national authority register.
           </p>
         </div>
-        <div className="max-w-sm w-full space-y-1">
-          <p className="text-xs text-zinc-500">Get status-change alerts</p>
+        <div className="max-w-sm w-full">
+          <p className="eyebrow mb-2">Status-change alerts</p>
           <EmailCapture variant="compact" />
         </div>
       </div>
 
       <FirmTable firms={firms} initialState={state} />
 
-      <div className="mt-8 rounded-xl border border-zinc-800 bg-zinc-900/30 p-5 text-sm text-zinc-500 leading-relaxed">
-        <strong className="text-zinc-400">"Not authorized"</strong> means not found in any EU MiCA register as of the
-        date shown — not an accusation of illegality.{' '}
-        <a href="/methodology" className="underline underline-offset-2 hover:text-zinc-300">
+      <div className="mt-8 card-paper rounded-sm p-5 text-sm text-ink-soft leading-relaxed">
+        <strong className="text-ink">"Not authorized"</strong> means not found in any EU MiCA register as of the date
+        shown — not an accusation of illegality.{' '}
+        <a href="/methodology" className="text-oxblood hover:text-oxblood-deep underline underline-offset-2">
           Read our methodology →
         </a>
       </div>

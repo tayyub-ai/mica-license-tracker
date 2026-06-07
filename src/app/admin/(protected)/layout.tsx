@@ -10,19 +10,17 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   if (!user) redirect('/admin/login')
 
   return (
-    <div className="min-h-screen bg-zinc-950">
-      <div className="border-b border-zinc-800 bg-zinc-900/50 px-6 py-4 flex items-center justify-between">
-        <Link href="/admin" className="font-semibold text-white text-sm hover:text-zinc-300 transition-colors">
-          MiCA Tracker Admin
+    <div className="min-h-screen bg-paper">
+      <div className="border-b-2 border-rule-bold bg-paper-2 px-6 py-4 flex items-center justify-between">
+        <Link href="/admin" className="font-display text-lg font-semibold text-ink hover:text-oxblood transition-colors">
+          MiCA<span className="text-oxblood">·</span>Tracker Admin
         </Link>
         <div className="flex items-center gap-4">
-          <span className="text-xs text-zinc-500">{user.email}</span>
+          <span className="eyebrow normal-case tracking-normal">{user.email}</span>
           <LogoutButton />
         </div>
       </div>
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
-        {children}
-      </div>
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">{children}</div>
     </div>
   )
 }
