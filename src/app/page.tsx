@@ -8,6 +8,8 @@ import { StatsGrid, AtRiskBanner } from '@/components/dashboard/StatsGrid'
 import { EmailCapture } from '@/components/email/EmailCapture'
 import { EuropeTileMap } from '@/components/map/EuropeTileMap'
 import { StatusBadge } from '@/components/registry/StatusBadge'
+import { TeamProfileCard } from '@/components/team/TeamProfileCard'
+import { TEAM_MEMBERS } from '@/lib/constants/team'
 import type { FirmStatus } from '@/types/database'
 import type { Metadata } from 'next'
 
@@ -198,6 +200,19 @@ export default function HomePage() {
                 <h3 className="font-display text-xl font-semibold text-ink mb-2">{c.title}</h3>
                 <p className="text-sm text-ink-soft leading-relaxed">{c.body}</p>
               </div>
+            ))}
+          </div>
+        </section>
+
+        {/* ===== TEAM ===== */}
+        <section className="pb-24">
+          <SectionHead kicker="The people behind the data" title="Built by specialists" href="/team" hrefLabel="Meet the team" />
+          <p className="-mt-3 mb-7 text-ink-soft max-w-2xl">
+            MiCA Tracker combines implementation discipline with deep fintech and blockchain context.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {TEAM_MEMBERS.map((member) => (
+              <TeamProfileCard key={member.name} member={member} />
             ))}
           </div>
         </section>

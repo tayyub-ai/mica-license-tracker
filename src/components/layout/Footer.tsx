@@ -21,6 +21,7 @@ export function Footer() {
                 ['Firm Registry', '/firms'],
                 ['Changelog', '/changelog'],
                 ['Methodology', '/methodology'],
+                ['Team', '/team'],
               ].map(([l, h]) => (
                 <Link key={h} href={h} className="text-sm text-ink-soft hover:text-gold transition-colors w-fit">
                   {l}
