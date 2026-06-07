@@ -22,15 +22,30 @@ export function FirmTable({ firms, initialState }: Props) {
 
   const filtered = useMemo(() => {
     const q = search.toLowerCase()
-    return firms.filter((f) => {
-      const status = f.firm_statuses?.[0]?.status ?? 'not_authorized'
-      const matchSearch =
-        !q || f.trading_name.toLowerCase().includes(q) || f.legal_name.toLowerCase().includes(q)
-      const matchStatus = statusFilter === 'all' || status === statusFilter
-      const matchCategory = categoryFilter === 'all' || f.category === categoryFilter
-      const matchState = stateFilter === 'all' || f.home_state_code === stateFilter
-      return matchSearch && matchStatus && matchCategory && matchState
-    })
+    // Show licensed and recognised firms first; push unverified/no-LEI entries down.
+    const rank: Record<string, number> = {
+      authorized: 0, application_pending: 1, exited_restricting_eu: 2, out_of_scope: 3, not_authorized: 4,
+    }
+    return firms
+      .filter((f) => {
+        const status = f.firm_statuses?.[0]?.status ?? 'not_authorized'
+        const matchSearch =
+          !q || f.trading_name.toLowerCase().includes(q) || f.legal_name.toLowerCase().includes(q)
+        const matchStatus = statusFilter === 'all' || status === statusFilter
+        const matchCategory = categoryFilter === 'all' || f.category === categoryFilter
+        const matchState = stateFilter === 'all' || f.home_state_code === stateFilter
+        return matchSearch && matchStatus && matchCategory && matchState
+      })
+      .sort((a, b) => {
+        const ra = rank[a.firm_statuses?.[0]?.status ?? 'not_authorized'] ?? 5
+        const rb = rank[b.firm_statuses?.[0]?.status ?? 'not_authorized'] ?? 5
+        if (ra !== rb) return ra - rb
+        // within a status, real (LEI-bearing) entities before unverified ones
+        const la = a.lei ? 0 : 1
+        const lb = b.lei ? 0 : 1
+        if (la !== lb) return la - lb
+        return a.trading_name.localeCompare(b.trading_name)
+      })
   }, [firms, search, statusFilter, categoryFilter, stateFilter])
 
   return (
@@ -106,11 +121,11 @@ export function FirmTable({ firms, initialState }: Props) {
                     </Link>
                   </td>
                   <td className="px-4 py-3 text-ink-soft hidden md:table-cell">{CATEGORY_LABELS[firm.category] ?? firm.category}</td>
-                  <td className="px-4 py-3">{status ? <StatusBadge status={status.status} /> : <span className="text-ink-faint">—</span>}</td>
+                  <td className="px-4 py-3">{status ? <StatusBadge status={status.status} /> : <span className="text-ink-faint">·</span>}</td>
                   <td className="px-4 py-3 cd-cell text-ink-faint hidden lg:table-cell">
                     {status?.last_verified
                       ? new Date(status.last_verified).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
-                      : '—'}
+                      : '·'}
                   </td>
                   <td className="px-4 py-3 hidden lg:table-cell">
                     {status?.source_url ? (
@@ -123,7 +138,7 @@ export function FirmTable({ firms, initialState }: Props) {
                         {status.source_type.replace(/_/g, ' ')}
                       </a>
                     ) : (
-                      '—'
+                      ', '
                     )}
                   </td>
                 </tr>

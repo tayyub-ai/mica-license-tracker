@@ -95,7 +95,13 @@
       "Bash(SEED_SUPABASE_SECRET=* node *)",
       "Bash(/usr/bin/curl -s http://localhost:3000/)",
       "Bash(cd /Users/tayyub/mica-license-tracker *)",
-      "Bash(lsof -ti:3000)"
+      "Bash(lsof -ti:3000)",
+      "Bash(/usr/bin/curl -s -o /dev/null -w \"deploy URL → %{http_code}\\\\n\" \"https://mica-license-tracker-83p8uet06-tayyab-khans-projects-f2e7a09c.vercel.app/\")",
+      "Bash(/usr/bin/curl -s \"https://mica-license-tracker.vercel.app/\")",
+      "Bash(/usr/bin/curl -s \"https://mica-license-tracker.vercel.app/api/firms\")",
+      "Bash(/usr/bin/curl -s -o /dev/null -w \"registry %{http_code}\\\\n\" \"https://mica-license-tracker.vercel.app/firms\")",
+      "Bash(/usr/bin/curl -s -o /dev/null -w \"methodology %{http_code}\\\\n\" \"https://mica-license-tracker.vercel.app/methodology\")",
+      "Bash(/usr/bin/curl -s \"https://mica-license-tracker.vercel.app/firms\")"
     ],
     "deny": [
       "Bash(rm -rf /*)",

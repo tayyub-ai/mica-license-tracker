@@ -6,7 +6,7 @@ import type { FirmStatus } from '@/types/database'
 
 export const metadata: Metadata = {
   title: 'Changelog',
-  description: 'Every MiCA authorization status change — dated, sourced, public.',
+  description: 'Every MiCA authorization status change, dated, sourced, public.',
 }
 
 export const revalidate = 3600
@@ -20,7 +20,7 @@ export default async function ChangelogPage() {
         <div>
           <p className="eyebrow mb-1.5">The Record</p>
           <h1 className="font-display text-4xl md:text-5xl font-semibold text-ink">Changelog</h1>
-          <p className="mt-3 text-ink-soft">Every status change — dated, sourced, auditable.</p>
+          <p className="mt-3 text-ink-soft">Every status change, dated, sourced, auditable.</p>
         </div>
         <a href="/changelog.xml" className="eyebrow border border-rule px-3 py-1.5 rounded-sm hover:border-oxblood hover:text-oxblood transition-colors">
           RSS

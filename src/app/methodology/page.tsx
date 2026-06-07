@@ -60,12 +60,12 @@ export default function MethodologyPage() {
       <div className="space-y-10 text-ink-soft leading-relaxed">
         <Section title="What we track">
           <p>
-            We maintain a curated watchlist of named crypto firms that operate in, or target, the EU market — major
+            We maintain a curated watchlist of named crypto firms that operate in, or target, the EU market, major
             exchanges, custodians, stablecoin/EMT/ART issuers, brokers, wallet providers, and other in-scope services.
           </p>
           <p className="mt-3">
             Absence from our watchlist does <strong className="text-ink">not</strong> mean a firm is authorized. And
-            absence from EU registers does not mean a firm is operating illegally — there are legitimate reasons a firm
+            absence from EU registers does not mean a firm is operating illegally, there are legitimate reasons a firm
             may not require MiCA authorization.
           </p>
         </Section>
@@ -73,11 +73,11 @@ export default function MethodologyPage() {
         <Section title="Status definitions">
           <dl className="space-y-4">
             {[
-              ['Authorized', 'The firm holds a MiCA CASP authorization (or ART/EMT issuer authorization). Confirmed via the ESMA interim MiCA register or a named NCA register — a direct link is always provided.'],
-              ['Application Pending', 'The firm has applied, or a regulator has confirmed an application is in process. Confidence is "reported" — lower certainty than register-confirmed.'],
-              ['Not Authorized', '"Not found in any EU MiCA register as of [date]." This is evidence of absence — not an accusation of illegality.'],
-              ['Exited / Restricting EU', 'The firm has announced a withdrawal, geoblocked EU users, or materially restricted EU service. Requires a firm announcement URL or documented geoblock evidence.'],
-              ['Out of Scope', "The firm's activity does not require a MiCA CASP authorization — e.g. a DeFi protocol with no identifiable issuer. A one-sentence rationale is provided."],
+              ['Licensed', 'The firm holds a MiCA licence (a CASP authorisation, or an issuer authorisation for stablecoins). Confirmed on the official European register or a national authority, with a direct link you can open.'],
+              ['Application Pending', 'The firm has applied, or a regulator has confirmed an application is under way. We mark this as lower certainty than a confirmed licence.'],
+              ['Not Licensed', 'Not found on any EU MiCA register as of the date shown. This tells you the firm is not listed yet. It is not a claim that the firm is breaking the law.'],
+              ['Exited or Restricting', 'The firm has announced it is leaving, blocked EU users, or pulled back its EU service. We link to the announcement or the evidence.'],
+              ['Out of Scope', "The firm's activity does not require a MiCA CASP authorization, e.g. a DeFi protocol with no identifiable issuer. A one-sentence rationale is provided."],
             ].map(([term, def]) => (
               <div key={term} className="grid sm:grid-cols-[180px_1fr] gap-1 sm:gap-4">
                 <dt className="font-medium text-ink">{term}</dt>
@@ -89,10 +89,10 @@ export default function MethodologyPage() {
 
         <Section title="Primary sources">
           <ul className="space-y-3">
-            <li><strong className="text-ink">ESMA interim MiCA register</strong> — five weekly-updated CSV files (CASPS, ARTZZ, EMTWP, OTHER, NCASP). The authoritative source for EU-wide CASP authorizations.</li>
-            <li><strong className="text-ink">National NCA registers</strong> — BaFin (DE), AFM (NL), AMF/GECO (FR), CBI (IE), MFSA (MT), CySEC (CY), CSSF (LU), CNMV (ES), Bank of Italy/CONSOB (IT), and others.</li>
-            <li><strong className="text-ink">ESMA Article 93 list</strong> — maps each EU/EEA member state to its supervising NCA.</li>
-            <li><strong className="text-ink">Firm announcements &amp; geoblock evidence</strong> — for "Exited / Restricting EU" status. Requires a direct URL.</li>
+            <li><strong className="text-ink">ESMA interim MiCA register</strong>, five weekly-updated CSV files (CASPS, ARTZZ, EMTWP, OTHER, NCASP). The authoritative source for EU-wide CASP authorizations.</li>
+            <li><strong className="text-ink">National NCA registers</strong>, BaFin (DE), AFM (NL), AMF/GECO (FR), CBI (IE), MFSA (MT), CySEC (CY), CSSF (LU), CNMV (ES), Bank of Italy/CONSOB (IT), and others.</li>
+            <li><strong className="text-ink">ESMA Article 93 list</strong>, maps each EU/EEA member state to its supervising NCA.</li>
+            <li><strong className="text-ink">Firm announcements &amp; geoblock evidence</strong>, for "Exited / Restricting EU" status. Requires a direct URL.</li>
           </ul>
         </Section>
 
@@ -112,7 +112,7 @@ export default function MethodologyPage() {
           <p>
             Every status carries a <strong className="text-ink">source URL</strong>, <strong className="text-ink">source type</strong>,
             <strong className="text-ink"> last-verified date</strong>, and a <strong className="text-ink">confidence level</strong>.
-            We never assert illegality — only register presence or absence. Firms are identified by legal entity name plus
+            We never assert illegality, only register presence or absence. Firms are identified by legal entity name plus
             LEI or national registration number (not trading name alone) to prevent clone-firm confusion.
           </p>
         </Section>

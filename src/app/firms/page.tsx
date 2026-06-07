@@ -61,7 +61,7 @@ export default async function FirmsPage({
 
       <div className="mt-8 card-paper rounded-sm p-5 text-sm text-ink-soft leading-relaxed">
         <strong className="text-ink">"Not authorized"</strong> means not found in any EU MiCA register as of the date
-        shown — not an accusation of illegality.{' '}
+        shown, not an accusation of illegality.{' '}
         <a href="/methodology" className="text-oxblood hover:text-oxblood-deep underline underline-offset-2">
           Read our methodology →
         </a>

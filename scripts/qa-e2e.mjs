@@ -21,8 +21,8 @@ try {
   // --- Homepage ---
   await page.goto(BASE, { waitUntil: 'networkidle' })
   check('Homepage loads', await page.title() !== '')
-  check('Countdown renders', await page.locator('text=Time remaining').count() > 0)
-  check('At-risk banner renders', await page.locator('text=At Risk').count() > 0)
+  check('Countdown renders', await page.locator('text=Time left').count() > 0)
+  check('At-risk banner renders', await page.locator('text=Still unlicensed').count() > 0)
   check('EU map renders (tiles)', await page.locator('button:has-text("DE")').count() > 0)
   check('Email capture present', await page.locator('input[type=email]').count() > 0)
 
@@ -51,7 +51,7 @@ try {
   await page.goto(`${BASE}/methodology`, { waitUntil: 'networkidle' })
   check('Methodology dispute channel present', await page.locator('text=corrections@mica-tracker.eu').count() > 0)
   await page.goto(`${BASE}/changelog`, { waitUntil: 'networkidle' })
-  check('Changelog populated', await page.locator('text=recorded as').count() > 0)
+  check('Changelog populated', await page.locator('a[href^="/firms/"]').count() > 5)
 
   // --- Admin login protection ---
   await page.goto(`${BASE}/admin`, { waitUntil: 'networkidle' })

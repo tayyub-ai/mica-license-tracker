@@ -19,7 +19,7 @@ export async function GET(req: Request) {
   const rss = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
   <channel>
-    <title>MiCA Tracker — Status Changelog</title>
+    <title>MiCA Tracker, Status Changelog</title>
     <link>${base}</link>
     <description>Live updates to EU MiCA CASP authorization statuses</description>
     <language>en</language>

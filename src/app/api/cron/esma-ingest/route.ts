@@ -72,7 +72,7 @@ export async function GET(req: Request) {
       byName.get(e.legal_name.toLowerCase().trim())
 
     if (!match) {
-      // Not in our watchlist — propose adding.
+      // Not in our watchlist, propose adding.
       newEntries++
       pendingReviews.push({
         ingestion_run_id: run.id,
@@ -83,7 +83,7 @@ export async function GET(req: Request) {
         decision: 'pending',
       })
     } else if (match.status !== 'authorized') {
-      // We have the firm but not marked authorized — propose status change.
+      // We have the firm but not marked authorized, propose status change.
       statusChanges++
       pendingReviews.push({
         ingestion_run_id: run.id,

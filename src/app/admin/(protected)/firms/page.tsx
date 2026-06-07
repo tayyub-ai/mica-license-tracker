@@ -45,13 +45,13 @@ export default async function AdminFirmsPage() {
                     {CATEGORY_LABELS[firm.category]}
                   </td>
                   <td className="px-4 py-3">
-                    {status ? <StatusBadge status={status.status as FirmStatus} /> : <span className="text-ink-faint text-xs">—</span>}
+                    {status ? <StatusBadge status={status.status as FirmStatus} /> : <span className="text-ink-faint text-xs">·</span>}
                   </td>
                   <td className="px-4 py-3 hidden lg:table-cell">
                     <span className={isStale ? 'text-ochre' : 'text-ink-faint'}>
                       {status?.last_verified
                         ? new Date(status.last_verified).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
-                        : '—'}
+                        : '·'}
                     </span>
                     {isStale && <span className="ml-1 text-xs text-ochre">stale</span>}
                   </td>

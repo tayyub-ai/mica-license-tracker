@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Fraunces, Hanken_Grotesk, IBM_Plex_Mono } from 'next/font/google'
+import { Fraunces, Outfit, IBM_Plex_Mono } from 'next/font/google'
 import './globals.css'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
@@ -11,9 +11,9 @@ const fraunces = Fraunces({
   axes: ['opsz'],
   display: 'swap',
 })
-const hanken = Hanken_Grotesk({
+const outfit = Outfit({
   subsets: ['latin'],
-  variable: '--font-hanken',
+  variable: '--font-outfit',
   display: 'swap',
 })
 const plexMono = IBM_Plex_Mono({
@@ -26,7 +26,7 @@ const plexMono = IBM_Plex_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: 'MiCA License Tracker — EU Crypto Authorization Status',
+    default: 'MiCA License Tracker, EU Crypto Authorization Status',
     template: '%s | MiCA License Tracker',
   },
   description: SITE_DESCRIPTION,
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${fraunces.variable} ${hanken.variable} ${plexMono.variable}`}>
+    <html lang="en" className={`${fraunces.variable} ${outfit.variable} ${plexMono.variable}`}>
       <body className="bg-paper text-ink antialiased">
         <a href="#main" className="skip-link">Skip to content</a>
         <Header />

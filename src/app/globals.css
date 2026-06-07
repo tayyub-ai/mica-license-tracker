@@ -1,29 +1,41 @@
 @import "tailwindcss";
 
 /*
-  MiCA License Tracker — "Regulatory Broadsheet"
-  An FT-style editorial data product. Warm paper, ink type, oxblood accent.
+  MiCA License Tracker, "Midnight Editorial"
+  Deep navy broadsheet at night. Fraunces serif, Outfit body, gold accent.
+  Token names kept from the prior system so all components inherit the new theme.
 */
 
 :root {
-  /* Paper & ink */
-  --paper:        #FBF3EA;  /* warm broadsheet stock */
-  --paper-2:      #F4E9DA;  /* slightly deeper panel */
-  --paper-3:      #EFE2D0;  /* inset / table stripe */
-  --ink:          #1C1A17;  /* near-black warm */
-  --ink-soft:     #4A443C;  /* secondary text */
-  --ink-faint:    #8A8073;  /* tertiary / captions */
-  --rule:         #D9CBB6;  /* hairline rules */
-  --rule-bold:    #2A2620;  /* editorial heavy rule */
+  /* Surfaces (paper-* names retained, now dark) */
+  --paper:   #0E1422;  /* deep navy base */
+  --paper-2: #141C2E;  /* raised panel */
+  --paper-3: #1B2438;  /* inset / table stripe */
+  --panel-glow: rgba(224, 178, 92, 0.10);
 
-  /* Accents */
-  --oxblood:      #A8200D;  /* AT-RISK — the emotional anchor */
-  --oxblood-deep: #7E1707;
-  --forest:       #1C6B4C;  /* authorized */
-  --forest-soft:  #2E8B66;
-  --ochre:        #B5830F;  /* pending */
-  --slate:        #5B6670;  /* exited / neutral */
-  --indigo:       #2E5A8F;  /* out of scope */
+  /* Ink (now light, for dark bg) */
+  --ink:       #F4EFE6;  /* warm cream, primary text */
+  --ink-soft:  #B9C1D0;  /* secondary */
+  --ink-faint: #8A93A6;  /* tertiary / captions */
+
+  /* Lines */
+  --rule:      #232C40;
+  --rule-bold: #33415C;
+
+  /* Accent system */
+  --gold:      #E6B65C;  /* primary brand accent */
+  --gold-deep: #C8923A;
+  --oxblood:   #E6B65C;  /* alias: legacy accent → gold (links/hover) */
+  --oxblood-deep: #C8923A;
+
+  /* Status palette (dark-tuned) */
+  --forest:      #5FD08C;  /* authorized / licensed */
+  --forest-soft: #7FE0A6;
+  --coral:       #F08A6B;  /* not authorized / at-risk */
+  --coral-deep:  #D96A4B;
+  --ochre:       #E6B65C;  /* application pending */
+  --slate:       #8A93A6;  /* exited / neutral */
+  --indigo:      #7FA8E0;  /* out of scope */
 
   --background: var(--paper);
   --foreground: var(--ink);
@@ -38,16 +50,20 @@
   --color-ink-faint: var(--ink-faint);
   --color-rule: var(--rule);
   --color-rule-bold: var(--rule-bold);
+  --color-gold: var(--gold);
+  --color-gold-deep: var(--gold-deep);
   --color-oxblood: var(--oxblood);
   --color-oxblood-deep: var(--oxblood-deep);
   --color-forest: var(--forest);
   --color-forest-soft: var(--forest-soft);
+  --color-coral: var(--coral);
+  --color-coral-deep: var(--coral-deep);
   --color-ochre: var(--ochre);
   --color-slate: var(--slate);
   --color-indigo: var(--indigo);
 
   --font-display: var(--font-fraunces);
-  --font-sans: var(--font-hanken);
+  --font-sans: var(--font-outfit);
   --font-mono: var(--font-plex-mono);
 }
 
@@ -57,108 +73,128 @@
     text-rendering: optimizeLegibility;
     scroll-behavior: smooth;
   }
-
-  /* Accessible focus — oxblood ring, never removed */
-  :focus-visible {
-    outline: 2px solid var(--oxblood);
-    outline-offset: 2px;
-    border-radius: 2px;
-  }
-
-  /* Skip link for keyboard users */
-  .skip-link {
-    position: absolute;
-    left: -9999px;
-    top: 0;
-    z-index: 100;
-    background: var(--ink);
-    color: var(--paper);
-    padding: 10px 16px;
-    border-radius: 4px;
-    font-size: 0.875rem;
-  }
-  .skip-link:focus {
-    left: 12px;
-    top: 12px;
-  }
   body {
     background-color: var(--paper);
     color: var(--ink);
-    font-family: var(--font-hanken), ui-sans-serif, system-ui, sans-serif;
-    /* faint paper grain */
+    font-family: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
+    /* atmospheric glow at top + faint star grain */
     background-image:
-      radial-gradient(circle at 1px 1px, rgba(28, 26, 23, 0.022) 1px, transparent 0);
-    background-size: 4px 4px;
+      radial-gradient(ellipse 70% 50% at 75% -8%, var(--panel-glow), transparent 60%),
+      radial-gradient(ellipse 60% 40% at 10% 0%, rgba(127, 168, 224, 0.06), transparent 55%);
+    background-attachment: fixed;
   }
 
-  ::selection {
-    background: var(--oxblood);
-    color: var(--paper);
-  }
+  ::selection { background: var(--gold); color: #0E1422; }
 
   h1, h2, h3, h4 {
     font-family: var(--font-fraunces), Georgia, serif;
-    font-weight: 600;
-    letter-spacing: -0.01em;
+    font-weight: 500;
+    letter-spacing: -0.015em;
+    color: var(--ink);
   }
 
-  /* Tabular figures everywhere data appears */
   .tnum { font-variant-numeric: tabular-nums; }
+
+  /* Accessible focus */
+  :focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+  .skip-link {
+    position: absolute; left: -9999px; top: 0; z-index: 100;
+    background: var(--gold); color: #0E1422; padding: 10px 16px; border-radius: 6px; font-size: 0.875rem; font-weight: 600;
+  }
+  .skip-link:focus { left: 12px; top: 12px; }
 }
 
 @layer components {
-  /* Editorial eyebrow label */
   .eyebrow {
-    font-family: var(--font-plex-mono), monospace;
+    font-family: var(--font-outfit), sans-serif;
     font-size: 0.6875rem;
-    letter-spacing: 0.22em;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--ink-faint);
+    font-weight: 500;
   }
 
-  /* Hairline */
-  .rule { border-color: var(--rule); }
-
-  /* Paper card */
+  /* Glass panel on navy */
   .card-paper {
-    background: var(--paper);
+    background: linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0) 60%), var(--paper-2);
     border: 1px solid var(--rule);
-    box-shadow: 0 1px 0 rgba(255,255,255,0.6) inset, 0 1px 2px rgba(28,26,23,0.04);
+    border-radius: 14px;
+    box-shadow: 0 1px 0 rgba(255,255,255,0.04) inset, 0 30px 60px -40px rgba(0,0,0,0.7);
   }
 
-  /* Heavy top rule like a newspaper masthead section */
-  .section-rule {
-    border-top: 2px solid var(--rule-bold);
+  .section-rule { border-top: 1px solid var(--rule); }
+
+  /* Gold pill */
+  .pill-gold {
+    border: 1px solid color-mix(in srgb, var(--gold) 40%, transparent);
+    color: var(--gold);
+    background: color-mix(in srgb, var(--gold) 8%, transparent);
   }
 }
 
-/* Countdown flip-style cells use mono + ink */
+/* Data cells: refined mono for tables / dates / identifiers */
 .cd-cell {
   font-family: var(--font-plex-mono), monospace;
   font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+/* Big serif figures (countdown, stat values) */
+.fig {
+  font-family: var(--font-fraunces), serif;
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
 }
 
-/* ===== Motion: staggered page-load reveals ===== */
+/* ===== Motion ===== */
 @keyframes reveal-up {
-  from { opacity: 0; transform: translateY(14px); }
+  from { opacity: 0; transform: translateY(16px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-
 .reveal {
   opacity: 0;
-  animation: reveal-up 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: reveal-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   animation-delay: var(--reveal-delay, 0ms);
 }
 
-/* Interactive press feedback */
-.press {
-  transition: transform 0.12s ease-out, background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
 }
-.press:active {
-  transform: scale(0.97);
+.glow-dot {
+  animation: glow-pulse 1.6s ease-in-out infinite;
 }
 
-/* Honor reduced-motion */
+@keyframes aurora-drift {
+  0%   { transform: translate(-4%, -2%) scale(1); opacity: 0.55; }
+  50%  { transform: translate(4%, 3%) scale(1.12); opacity: 0.8; }
+  100% { transform: translate(-4%, -2%) scale(1); opacity: 0.55; }
+}
+.aurora {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(70px);
+  pointer-events: none;
+  animation: aurora-drift 14s ease-in-out infinite;
+}
+
+.press {
+  transition: transform 0.12s ease-out, background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+.press:active { transform: scale(0.97); }
+
+.lift {
+  transition: transform 0.25s cubic-bezier(0.16,1,0.3,1), border-color 0.25s ease, box-shadow 0.25s ease;
+}
+.lift:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--gold) 35%, var(--rule));
+  box-shadow: 0 20px 50px -30px rgba(0,0,0,0.8);
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.001ms !important;
@@ -167,4 +203,5 @@
     scroll-behavior: auto !important;
   }
   .reveal { opacity: 1; transform: none; }
+  .aurora { animation: none; }
 }

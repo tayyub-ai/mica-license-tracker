@@ -17,7 +17,7 @@ interface SendArgs {
 
 export async function sendEmail({ to, subject, html }: SendArgs): Promise<{ ok: boolean; error?: string }> {
   if (!resend) {
-    console.warn('[email] RESEND_API_KEY not set — skipping send to', to)
+    console.warn('[email] RESEND_API_KEY not set, skipping send to', to)
     return { ok: false, error: 'Email not configured' }
   }
   try {
@@ -77,12 +77,12 @@ export function digestEmail(
     .map(
       (c) => `<li style="margin-bottom:8px;font-size:14px">
         <a href="${siteUrl()}/firms/${c.slug}" style="color:#18181b;font-weight:600">${c.trading_name}</a>
-        — ${c.old_status ? c.old_status + ' → ' : ''}<strong>${c.new_status}</strong>
+       , ${c.old_status ? c.old_status + ' → ' : ''}<strong>${c.new_status}</strong>
       </li>`
     )
     .join('')
   return {
-    subject: `MiCA Tracker — ${changes.length} status change${changes.length !== 1 ? 's' : ''} this week`,
+    subject: `MiCA Tracker, ${changes.length} status change${changes.length !== 1 ? 's' : ''} this week`,
     html: wrap(`
       <p style="font-size:15px;line-height:1.6">Here's what changed in EU MiCA authorizations this week:</p>
       <ul style="padding-left:18px">${rows}</ul>

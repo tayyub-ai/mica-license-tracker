@@ -12,20 +12,20 @@ export const ESMA_CSV_FILES = [
 ] as const
 
 export const STATUS_LABELS: Record<string, string> = {
-  authorized: 'Authorized',
+  authorized: 'Licensed',
   application_pending: 'Application Pending',
-  not_authorized: 'Not Authorized',
-  exited_restricting_eu: 'Exited / Restricting EU',
+  not_authorized: 'Not Licensed',
+  exited_restricting_eu: 'Exited or Restricting',
   out_of_scope: 'Out of Scope',
 }
 
 export const CATEGORY_LABELS: Record<string, string> = {
-  exchange: 'Exchange / Trading Platform',
+  exchange: 'Exchange & Trading',
   custodian: 'Custodian',
-  stablecoin_issuer: 'Stablecoin / EMT / ART Issuer',
-  broker: 'Broker / On-ramp',
+  stablecoin_issuer: 'Stablecoin Issuer',
+  broker: 'Broker & On-ramp',
   wallet_provider: 'Wallet Provider',
-  defi_other: 'DeFi / Other',
+  defi_other: 'DeFi & Other',
   other: 'Other',
 }
 

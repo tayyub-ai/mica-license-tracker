@@ -59,7 +59,7 @@ export function EuropeTileMap({ states }: { states: StateWithCount[] }) {
               onFocus={() => setHover(s)}
               onBlur={() => setHover(null)}
               onClick={() => router.push(`/firms?state=${code}`)}
-              className="press aspect-square rounded-sm border text-center flex flex-col items-center justify-center hover:scale-[1.08] hover:z-10 hover:shadow-md cursor-pointer"
+              className="press aspect-square rounded-md border text-center flex flex-col items-center justify-center hover:scale-[1.12] hover:z-10 hover:shadow-lg hover:ring-2 hover:ring-gold/50 cursor-pointer"
               aria-label={`${s.name}: ${s.authorized_count} authorized firms. Filter registry.`}
             >
               <span className="cd-cell text-[11px] font-semibold leading-none">{code}</span>
@@ -99,7 +99,7 @@ export function EuropeTileMap({ states }: { states: StateWithCount[] }) {
                 <span className="cd-cell text-ink">
                   {hover.transitional_end_date
                     ? new Date(hover.transitional_end_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
-                    : '—'}
+                    : 'Not set'}
                 </span>
               </p>
               {hover.notes && <p className="text-xs text-ink-faint leading-relaxed pt-1">{hover.notes}</p>}

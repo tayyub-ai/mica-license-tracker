@@ -15,7 +15,7 @@ export default function EmbedPage() {
       <h1 className="font-display text-4xl md:text-5xl font-semibold text-ink mb-3">Embed the Widget</h1>
       <p className="text-ink-soft mb-10 text-lg">
         Add a live MiCA authorization counter and countdown to the 1 July 2026 deadline on your own site, blog, or
-        newsletter. Free to use — a link back is appreciated.
+        newsletter. Free to use, a link back is appreciated.
       </p>
 
       <div className="space-y-8">

@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import { CATEGORY_LABELS } from '@/lib/constants/deadline'
+import { CATEGORY_LABELS, STATUS_LABELS } from '@/lib/constants/deadline'
 import type { FirmCategory, FirmStatus, SourceType, Confidence } from '@/types/database'
 
 interface Props {
@@ -116,7 +116,7 @@ export function FirmForm({ initialFirmId, initialValues }: Props) {
         .eq('firm_id', firmId)
         .single()
 
-      // Replace status (one row per firm — delete then insert)
+      // Replace status (one row per firm, delete then insert)
       await supabase.from('firm_statuses').delete().eq('firm_id', firmId)
       const { error: statusErr } = await supabase
         .from('firm_statuses')
@@ -149,12 +149,15 @@ export function FirmForm({ initialFirmId, initialValues }: Props) {
           notes: values.notes || null,
         })
 
-        // Add changelog entry
+        // Add changelog entry (friendly labels, no raw status codes)
+        const label = (s: string | null) => (s ? STATUS_LABELS[s] ?? s : null)
         await supabase.from('changelog_entries').insert({
           firm_id: firmId,
           old_status: oldStatus,
           new_status: values.status,
-          summary: `${values.trading_name} status ${oldStatus ? `changed from ${oldStatus} to ${values.status}` : `set to ${values.status}`}`,
+          summary: oldStatus
+            ? `${values.trading_name} moved from ${label(oldStatus)} to ${label(values.status)}.`
+            : `${values.trading_name} listed as ${label(values.status)}.`,
           source_url: values.source_url,
         })
       }

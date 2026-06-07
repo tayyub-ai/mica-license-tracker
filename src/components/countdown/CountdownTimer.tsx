@@ -23,44 +23,46 @@ function getTimeLeft(): TimeLeft {
   }
 }
 
-function Unit({ value, label, wide }: { value: number; label: string; wide?: boolean }) {
+function Cell({ value, label, pad = true }: { value: number; label: string; pad?: boolean }) {
   return (
     <div className="flex flex-col items-center">
-      <span
-        className={`cd-cell font-semibold leading-none text-ink ${wide ? 'text-5xl md:text-7xl' : 'text-4xl md:text-6xl'}`}
-      >
-        {wide ? value : String(value).padStart(2, '0')}
+      <span className="fig text-5xl md:text-6xl leading-none text-ink">
+        {pad ? String(value).padStart(2, '0') : value}
       </span>
-      <span className="eyebrow mt-2 text-[10px]">{label}</span>
+      <span className="eyebrow mt-2.5 text-[10px]">{label}</span>
     </div>
   )
 }
 
+// Stable zero state for SSR / first client render to avoid hydration mismatch.
+const ZERO: TimeLeft = { days: 0, hours: 0, minutes: 0, seconds: 0, expired: false }
+
 export function CountdownTimer() {
-  const [t, setT] = useState<TimeLeft>(getTimeLeft)
+  const [t, setT] = useState<TimeLeft>(ZERO)
 
   useEffect(() => {
+    setT(getTimeLeft())
     const id = setInterval(() => setT(getTimeLeft()), 1000)
     return () => clearInterval(id)
   }, [])
 
   if (t.expired) {
-    return <p className="font-display text-3xl text-oxblood">The MiCA deadline has passed — 1 July 2026.</p>
+    return <p className="font-display text-3xl text-gold">The deadline has passed.</p>
   }
 
   return (
-    <div className="inline-flex items-end gap-5 md:gap-8 px-6 py-5 card-paper rounded-sm">
-      <Unit value={t.days} label="Days" wide />
-      <Dot />
-      <Unit value={t.hours} label="Hours" />
-      <Dot />
-      <Unit value={t.minutes} label="Minutes" />
-      <Dot />
-      <Unit value={t.seconds} label="Seconds" />
+    <div className="inline-flex items-end gap-5 md:gap-7 px-7 py-6 card-paper rounded-2xl">
+      <Cell value={t.days} label="Days" pad={false} />
+      <Colon />
+      <Cell value={t.hours} label="Hours" />
+      <Colon />
+      <Cell value={t.minutes} label="Minutes" />
+      <Colon />
+      <Cell value={t.seconds} label="Seconds" />
     </div>
   )
 }
 
-function Dot() {
-  return <span className="cd-cell text-3xl md:text-5xl text-rule mb-5 leading-none">:</span>
+function Colon() {
+  return <span className="fig text-3xl md:text-4xl text-rule-bold mb-6 leading-none">:</span>
 }
