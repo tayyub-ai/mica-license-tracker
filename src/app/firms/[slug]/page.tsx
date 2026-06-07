@@ -88,11 +88,16 @@ export default async function FirmDetailPage({ params }: Props) {
               </a>
             </div>
             {cur.status === 'not_authorized' && (
-              <p className="text-xs text-ink-faint border-t border-rule pt-4 leading-relaxed">
-                "Not found in any EU MiCA register as of {fmt(cur.last_verified)}." This is evidence of absence, not an
-                accusation of illegality.{' '}
-                <Link href="/methodology" className="text-oxblood underline underline-offset-2">Methodology</Link>
-              </p>
+              <div className="border-t border-rule pt-4 space-y-1.5">
+                <p className="text-xs text-ink-faint leading-relaxed">
+                  "Not found in any EU MiCA register as of {fmt(cur.last_verified)}." This is evidence of absence, not an
+                  accusation of illegality.{' '}
+                  <Link href="/methodology" className="text-oxblood underline underline-offset-2">Methodology</Link>
+                </p>
+                <p className="text-xs text-ink-faint leading-relaxed">
+                  Checked against: ESMA MiCA register (CASP and EMT/ART lists).
+                </p>
+              </div>
             )}
             {cur.out_of_scope_reason && (
               <p className="text-sm text-ink-soft">

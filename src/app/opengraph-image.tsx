@@ -32,7 +32,7 @@ export default function Image() {
           </div>
         </div>
         <div style={{ display: 'flex', fontSize: 32, color: '#d4d4d8', marginTop: 32 }}>
-          Live tracker · Deadline 1 July 2026 · Sourced from ESMA
+          EU licence tracker · Deadline 1 July 2026 · Sourced from ESMA
         </div>
       </div>
     ),

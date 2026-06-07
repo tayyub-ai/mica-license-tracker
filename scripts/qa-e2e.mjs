@@ -22,7 +22,7 @@ try {
   await page.goto(BASE, { waitUntil: 'networkidle' })
   check('Homepage loads', await page.title() !== '')
   check('Countdown renders', await page.locator('text=Time left').count() > 0)
-  check('At-risk banner renders', await page.locator('text=Still unlicensed').count() > 0)
+  check('Key figures band renders', await page.locator('text=Not licensed').count() > 0)
   check('EU map renders (SVG paths)', await page.locator('svg path[aria-label*="Germany"]').count() > 0)
   check('Email capture present', await page.locator('input[type=email]').count() > 0)
 

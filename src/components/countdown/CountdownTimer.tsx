@@ -25,11 +25,11 @@ function getTimeLeft(): TimeLeft {
 
 function Cell({ value, label, pad = true }: { value: number; label: string; pad?: boolean }) {
   return (
-    <div className="flex flex-col items-center">
-      <span className="fig text-4xl sm:text-5xl md:text-6xl leading-none text-ink">
+    <div className="flex flex-col">
+      <span className="fig text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-[0.9] text-ink">
         {pad ? String(value).padStart(2, '0') : value}
       </span>
-      <span className="eyebrow mt-2.5 text-[9px] sm:text-[10px]">{label}</span>
+      <span className="eyebrow mt-3 text-[9px] sm:text-[10px]">{label}</span>
     </div>
   )
 }
@@ -47,22 +47,21 @@ export function CountdownTimer() {
   }, [])
 
   if (t.expired) {
-    return <p className="font-display text-3xl text-gold">The deadline has passed.</p>
+    const daysSince = Math.floor((Date.now() - MICA_DEADLINE.getTime()) / 86400000)
+    return (
+      <div className="flex flex-col">
+        <span className="fig text-5xl md:text-6xl lg:text-7xl leading-[0.9] text-ink">{daysSince}</span>
+        <span className="eyebrow mt-3 text-[10px]">Days since the transition ended</span>
+      </div>
+    )
   }
 
   return (
-    <div className="inline-flex items-end gap-2.5 sm:gap-5 md:gap-7 px-4 sm:px-7 py-4 sm:py-6 card-paper rounded-2xl">
+    <div className="flex items-start gap-4 sm:gap-6 md:gap-9">
       <Cell value={t.days} label="Days" pad={false} />
-      <Colon />
       <Cell value={t.hours} label="Hours" />
-      <Colon />
       <Cell value={t.minutes} label="Minutes" />
-      <Colon />
       <Cell value={t.seconds} label="Seconds" />
     </div>
   )
-}
-
-function Colon() {
-  return <span className="fig text-2xl sm:text-3xl md:text-4xl text-rule-bold mb-4 sm:mb-6 leading-none">:</span>
 }

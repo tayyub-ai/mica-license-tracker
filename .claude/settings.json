@@ -103,7 +103,8 @@
       "Bash(/usr/bin/curl -s -o /dev/null -w \"methodology %{http_code}\\\\n\" \"https://mica-license-tracker.vercel.app/methodology\")",
       "Bash(/usr/bin/curl -s \"https://mica-license-tracker.vercel.app/firms\")",
       "Bash(/usr/bin/curl -s -o /dev/null -w \"home %{http_code}\\\\n\" \"https://mica-license-tracker.vercel.app/\")",
-      "Bash(/usr/bin/curl -s -o /dev/null -w \"%{http_code}\\\\n\" \"https://mica-license-tracker.vercel.app/team\")"
+      "Bash(/usr/bin/curl -s -o /dev/null -w \"%{http_code}\\\\n\" \"https://mica-license-tracker.vercel.app/team\")",
+      "Bash(/usr/bin/curl -s -H \"Authorization: Bearer mica_cron_8f3k9d2p1q7w5z\" http://localhost:3000/api/cron/esma-ingest)"
     ],
     "deny": [
       "Bash(rm -rf /*)",

@@ -46,7 +46,7 @@ export function confirmationEmail(token: string) {
     subject: 'Confirm your MiCA Tracker subscription',
     html: wrap(`
       <p style="font-size:15px;line-height:1.6">Thanks for subscribing. Please confirm your email to start receiving
-      <strong>status-change alerts and weekly digests</strong> on EU MiCA crypto authorizations.</p>
+      <strong>a weekly email summarising what changed on the EU MiCA register</strong>.</p>
       <p style="margin:24px 0">
         <a href="${url}" style="background:#18181b;color:#fff;text-decoration:none;padding:12px 24px;border-radius:8px;font-weight:600;font-size:14px;display:inline-block">Confirm subscription</a>
       </p>
@@ -60,8 +60,8 @@ export function welcomeEmail(unsubToken: string) {
   return {
     subject: 'You are subscribed to MiCA Tracker',
     html: wrap(`
-      <p style="font-size:15px;line-height:1.6">You're confirmed. You'll receive <strong>status-change alerts and weekly digests</strong>
-      as firms gain or lose MiCA authorization ahead of the 1 July 2026 deadline.</p>
+      <p style="font-size:15px;line-height:1.6">You're confirmed. You'll receive <strong>a weekly email summarising what changed on the EU MiCA register</strong>
+      as firms gain or lose their MiCA licence ahead of the 1 July 2026 deadline.</p>
       <p style="margin:20px 0"><a href="${siteUrl()}/firms" style="color:#18181b;font-weight:600">Browse the firm registry →</a></p>
       <p style="font-size:12px;color:#71717a"><a href="${unsub}" style="color:#71717a">Unsubscribe</a></p>
     `),

@@ -21,7 +21,7 @@ const FAQ = [
   },
   {
     q: 'How often is the data updated?',
-    a: 'The ESMA register is checked weekly via an automated diff that surfaces changes for human verification before publishing. National NCA registers are checked monthly. Firms can submit corrections at any time.',
+    a: 'The site is statically generated and refreshes hourly. Source checks happen weekly: an automated job fetches the ESMA CASP register (CASPS) and the e-money/asset-referenced token issuer register (EMTWP), diffs them against our database, and queues any changes for human review before they are published. Other ESMA files and national authority registers are not yet part of the weekly automated job. Firms can submit corrections at any time.',
   },
   {
     q: 'How can a firm dispute its status?',
@@ -87,21 +87,34 @@ export default function MethodologyPage() {
           </dl>
         </Section>
 
-        <Section title="Primary sources">
+        <Section title="Source coverage">
           <ul className="space-y-3">
-            <li><strong className="text-ink">ESMA interim MiCA register</strong>, five weekly-updated CSV files (CASPS, ARTZZ, EMTWP, OTHER, NCASP). The authoritative source for EU-wide CASP authorizations.</li>
-            <li><strong className="text-ink">National NCA registers</strong>, BaFin (DE), AFM (NL), AMF/GECO (FR), CBI (IE), MFSA (MT), CySEC (CY), CSSF (LU), CNMV (ES), Bank of Italy/CONSOB (IT), and others.</li>
-            <li><strong className="text-ink">ESMA Article 93 list</strong>, maps each EU/EEA member state to its supervising NCA.</li>
-            <li><strong className="text-ink">Firm announcements &amp; geoblock evidence</strong>, for "Exited / Restricting EU" status. Requires a direct URL.</li>
+            <li>
+              <strong className="text-ink">Checked automatically every week:</strong> the ESMA CASP register (CASPS) and the
+              e-money/asset-referenced token issuer register (EMTWP). New entries and changes are queued for human review
+              before they appear here. Nothing is auto-published.
+            </li>
+            <li>
+              <strong className="text-ink">Included but not yet automated:</strong> the ESMA non-compliant-entities list,
+              loaded once and shown as Not Licensed with the regulator's note.
+            </li>
+            <li>
+              <strong className="text-ink">Not yet covered automatically:</strong> the ESMA ARTZZ and OTHER files, and the
+              national authority registers. Some entries are checked by hand against a named authority.
+            </li>
+            <li>
+              <strong className="text-ink">Firm announcements &amp; geoblock evidence,</strong> for "Exited / Restricting EU"
+              status. Requires a direct URL.
+            </li>
           </ul>
         </Section>
 
         <Section title="Update cadence">
-          <ul className="space-y-2">
-            <li>ESMA register: checked weekly (automated diff, human verification before publishing).</li>
-            <li>NCA registers: checked monthly.</li>
-            <li>Firm announcements: monitored on an ongoing basis.</li>
-          </ul>
+          <p>
+            The site is statically generated and refreshes hourly. It is not live or real-time. Source checks run weekly:
+            the automated job above fetches the CASPS and EMTWP register files, diffs them against our database, and queues
+            any changes for human review before publishing. Firm announcements are monitored on an ongoing basis.
+          </p>
           <p className="mt-3">
             Every status row carries a <code className="cd-cell text-ink bg-paper-3 px-1.5 py-0.5 rounded-sm text-xs">last_verified</code> date.
             Rows older than 30 days are flagged for review.

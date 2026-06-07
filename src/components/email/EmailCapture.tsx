@@ -32,7 +32,7 @@ export function EmailCapture({ variant = 'default' }: { variant?: 'default' | 'c
     return (
       <p className="text-forest text-sm font-medium flex items-center gap-2">
         <span className="w-1.5 h-1.5 rounded-full bg-forest" />
-        Check your inbox to confirm. Alerts and weekly updates are on the way.
+        Check your inbox to confirm. We send one weekly email summarising changes.
       </p>
     )
   }

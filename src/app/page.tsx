@@ -3,8 +3,9 @@ import Link from 'next/link'
 import { getDashboardStats } from '@/lib/queries/firms'
 import { getStateCounts } from '@/lib/queries/states'
 import { getChangelog } from '@/lib/queries/changelog'
+import { getFreshness } from '@/lib/queries/freshness'
 import { CountdownTimer } from '@/components/countdown/CountdownTimer'
-import { StatsGrid, AtRiskBanner } from '@/components/dashboard/StatsGrid'
+import { Freshness } from '@/components/dashboard/Freshness'
 import { EmailCapture } from '@/components/email/EmailCapture'
 import { GeographicMap } from '@/components/map/GeographicMap'
 import { StatusBadge } from '@/components/registry/StatusBadge'
@@ -17,17 +18,45 @@ export const metadata: Metadata = {
 
 export const revalidate = 3600
 
-async function DashboardSection() {
-  const stats = await getDashboardStats()
+function Figure({ label, value, color, caption }: { label: string; value: number; color?: string; caption?: string }) {
   return (
-    <div className="space-y-5">
-      <AtRiskBanner stats={stats} />
-      <StatsGrid stats={stats} />
-      {stats.last_updated && (
-        <p className="eyebrow text-right">
-          Last verified {new Date(stats.last_updated).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
-        </p>
-      )}
+    <div className="pl-6 sm:pl-8 ml-6 sm:ml-8 border-l border-rule first:pl-0 first:ml-0 first:border-0">
+      <p className="eyebrow mb-2">{label}</p>
+      <p className="fig text-4xl sm:text-5xl lg:text-6xl leading-none tnum" style={color ? { color } : undefined}>
+        {value}
+      </p>
+      {caption && <p className="text-xs text-ink-faint mt-2">{caption}</p>}
+    </div>
+  )
+}
+
+async function HeroBand() {
+  const [stats, freshness] = await Promise.all([getDashboardStats(), getFreshness()])
+  return (
+    <div className="mt-14 md:mt-20 border-t border-rule pt-10">
+      <div className="grid lg:grid-cols-[auto_1fr] gap-x-16 gap-y-10 items-end">
+        <div>
+          <p className="eyebrow mb-5">Time left until 1 July 2026</p>
+          <Suspense fallback={<div className="h-20" />}>
+            <CountdownTimer />
+          </Suspense>
+        </div>
+        <div className="lg:text-right">
+          <div className="flex lg:justify-end">
+            <Figure label="Licensed" value={stats.authorized} color="var(--forest)" />
+            <Figure
+              label="Not licensed"
+              value={stats.not_authorized}
+              color="var(--coral)"
+              caption={`of ${stats.total} tracked`}
+            />
+            <Figure label="Tracked firms" value={stats.total} />
+          </div>
+          <div className="mt-6 lg:flex lg:justify-end">
+            <Freshness registerLastChecked={freshness.registerLastChecked} latestChange={freshness.latestChange} />
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
@@ -78,59 +107,29 @@ export default function HomePage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       {/* ===== HERO ===== */}
-      <section className="pt-16 md:pt-24 pb-16 md:pb-20">
-        <p className="eyebrow mb-6">EU MiCA Regulation · The 1 July 2026 deadline</p>
-        <div className="grid lg:grid-cols-12 gap-x-12 gap-y-10 items-end">
-          <div className="lg:col-span-7">
-            <h1 className="font-display text-5xl md:text-[5.5rem] font-semibold leading-[1.0] tracking-tight text-ink">
-              Which crypto firms are{' '}
-              <span className="italic text-gold">licensed</span> to operate in the EU?
-            </h1>
-          </div>
-          <div className="lg:col-span-5">
+      <section className="pt-16 md:pt-28 pb-16 md:pb-24">
+        <p className="eyebrow mb-7">EU MiCA Regulation · Article 143(3)</p>
+        <div className="grid lg:grid-cols-12 gap-x-12 gap-y-8 items-start">
+          <h1 className="lg:col-span-8 font-display text-[2.75rem] sm:text-6xl lg:text-[5.75rem] font-semibold leading-[0.98] tracking-[-0.02em] text-ink">
+            Which crypto firms are{' '}
+            <span className="italic text-gold">licensed</span> to operate in the EU?
+          </h1>
+          <div className="lg:col-span-4 lg:pt-3">
             <p className="text-lg text-ink-soft leading-relaxed">
               The transitional window is closing. Firms without a licence must leave the EU market. Every status here
               comes straight from the official European register, checked and dated.
             </p>
-            <div className="mt-6 max-w-md">
+            <div className="mt-6">
               <EmailCapture variant="compact" />
-              <p className="eyebrow normal-case tracking-normal text-ink-faint mt-2">
-                Get an email when a firm&apos;s status changes.
-              </p>
+              <p className="text-xs text-ink-faint mt-2.5">Get a weekly email summarising what changed.</p>
             </div>
           </div>
         </div>
 
-        {/* countdown band */}
-        <div className="mt-12 md:mt-16 border-t border-rule pt-8 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
-          <div>
-            <p className="eyebrow mb-4">Time left until the deadline</p>
-            <Suspense fallback={<div className="h-24" />}>
-              <CountdownTimer />
-            </Suspense>
-          </div>
-          <p className="text-sm text-ink-faint leading-relaxed max-w-xs">
-            1 July 2026 is the EU-wide cut-off. Many member states set shorter windows of their own.
-          </p>
-        </div>
-      </section>
-
-      {/* ===== DASHBOARD ===== */}
-      <section className="pb-16">
-        <SectionTitle title="Where things stand today" href="/firms" hrefLabel="Browse all firms" />
         <Suspense
-          fallback={
-            <div className="space-y-5">
-              <div className="h-28 card-paper animate-pulse" />
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                {[...Array(4)].map((_, i) => (
-                  <div key={i} className="h-28 card-paper animate-pulse" />
-                ))}
-              </div>
-            </div>
-          }
+          fallback={<div className="mt-14 md:mt-20 border-t border-rule pt-10 h-32 animate-pulse" />}
         >
-          <DashboardSection />
+          <HeroBand />
         </Suspense>
       </section>
 

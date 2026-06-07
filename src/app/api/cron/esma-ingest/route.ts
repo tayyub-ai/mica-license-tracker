@@ -37,12 +37,19 @@ export async function GET(req: Request) {
   // Load current firms keyed by LEI and by normalized legal name.
   const { data: firms } = await sb
     .from('firms')
-    .select('id, legal_name, lei, firm_statuses(status)')
+    .select('id, legal_name, lei, firm_statuses(status, source_type)')
+
+  type FirmRow = {
+    id: string
+    legal_name: string
+    lei: string | null
+    firm_statuses?: { status: string; source_type?: string }[]
+  }
 
   const byLei = new Map<string, { id: string; status?: string }>()
   const byName = new Map<string, { id: string; status?: string }>()
-  for (const f of firms ?? []) {
-    const status = (f as { firm_statuses?: { status: string }[] }).firm_statuses?.[0]?.status
+  for (const f of (firms ?? []) as FirmRow[]) {
+    const status = f.firm_statuses?.[0]?.status
     const rec = { id: f.id, status }
     if (f.lei) byLei.set(f.lei.toUpperCase(), rec)
     byName.set(f.legal_name.toLowerCase().trim(), rec)
@@ -97,13 +104,46 @@ export async function GET(req: Request) {
     // else: already authorized, no action.
   }
 
+  // Removal detection: firms we currently mark as ESMA-sourced authorized
+  // that are no longer present in the fetched register file. Queue for human
+  // review only — never auto-change status.
+  const esmaLeiSet = new Set<string>()
+  const esmaNameSet = new Set<string>()
+  for (const e of entities) {
+    if (e.lei) esmaLeiSet.add(e.lei.toUpperCase())
+    esmaNameSet.add(e.legal_name.toLowerCase().trim())
+  }
+
+  let removals = 0
+  for (const f of (firms ?? []) as FirmRow[]) {
+    const st = f.firm_statuses?.[0]
+    if (!st || st.status !== 'authorized' || st.source_type !== 'esma_csv') continue
+
+    const leiPresent = f.lei ? esmaLeiSet.has(f.lei.toUpperCase()) : false
+    const namePresent = esmaNameSet.has(f.legal_name.toLowerCase().trim())
+    if (leiPresent || namePresent) continue
+
+    removals++
+    pendingReviews.push({
+      ingestion_run_id: run.id,
+      review_type: 'removal',
+      esma_entity_name: f.legal_name,
+      esma_data: {
+        firm_id: f.id,
+        reason: 'No longer present in the current ESMA register file',
+      },
+      matched_firm_id: f.id,
+      decision: 'pending',
+    })
+  }
+
   if (pendingReviews.length > 0) {
     await sb.from('esma_pending_reviews').insert(pendingReviews)
   }
 
   await sb
     .from('esma_ingestion_runs')
-    .update({ new_entries: newEntries, status_changes: statusChanges })
+    .update({ new_entries: newEntries, status_changes: statusChanges + removals })
     .eq('id', run.id)
 
   return NextResponse.json({
@@ -113,6 +153,7 @@ export async function GET(req: Request) {
     entities_fetched: entities.length,
     new_entries: newEntries,
     status_changes: statusChanges,
+    removals,
     queued_for_review: pendingReviews.length,
   })
 }

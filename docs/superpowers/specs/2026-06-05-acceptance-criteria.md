@@ -1,7 +1,9 @@
 # MiCA License Tracker — Acceptance Criteria
 
 **Date:** 2026-06-05  
-**Status:** Authoritative — all criteria derived from primary regulatory sources (ESMA, national acts)
+**Status:** Authoritative, all criteria derived from primary regulatory sources (ESMA, national acts)
+
+> **Note:** Some criteria below describe target behaviour. See the authority-credibility roadmap for current coverage vs planned. Where current implementation differs from a target, it is called out inline.
 
 ---
 
@@ -23,13 +25,13 @@
 
 | # | Criterion | Pass condition |
 |---|---|---|
-| 2.1 | ESMA register as primary | Every "Authorized" status traces to one of the five ESMA interim CSVs (CASPS.csv, ARTZZ.csv, EMTWP.csv, OTHER.csv, NCASP.csv). Direct URL or row reference required. |
+| 2.1 | ESMA register as primary | Every "Authorized" status traces to an ESMA interim CSV (CASPS.csv, ARTZZ.csv, EMTWP.csv, OTHER.csv, NCASP.csv). Direct URL or row reference required. Current automated ingestion covers CASPS + EMTWP; NCASP was loaded once; ARTZZ and OTHER are not yet automatically processed. |
 | 2.2 | NCA registers as secondary | Where a firm's CASP authorization predates ESMA CSV inclusion, it may be sourced to a named NCA register (BaFin, AFM, AMF/GECO, CBI, MFSA, CySEC, CSSF, CNMV, Bank of Italy/CONSOB) with a URL. |
 | 2.3 | Source field never empty | Database constraint: `source_url` NOT NULL on every firm-status row. Admin UI rejects submission without source. |
 | 2.4 | `last_verified` field never empty | `last_verified` date required on every status row. Rows older than **30 days** surface as "stale" in the admin panel. |
 | 2.5 | Confidence field present | Every row has `confidence` in {high, medium, reported}. ESMA CSV = high. NCA-only = high. Firm statement = reported. Press-only = medium. |
 | 2.6 | Source shown publicly | Every firm's detail page shows source type, source URL (clickable), and last-verified date. Not hidden in admin. |
-| 2.7 | ESMA CSV ingestion pipeline | A scheduled job fetches the ESMA CSVs weekly and diffs against current DB. New entries and status changes are surfaced to admins as "pending review" — not auto-published. |
+| 2.7 | ESMA CSV ingestion pipeline | A scheduled job fetches the ESMA CSVs weekly and diffs against current DB. New entries and status changes are surfaced to admins as "pending review", not auto-published. Current coverage: CASPS + EMTWP only. The remaining ESMA files (ARTZZ, OTHER) and the once-loaded NCASP list are a roadmap item, not yet part of the weekly automated job. |
 | 2.8 | Article 93 NCA mapping | System uses the ESMA Article 93 competent-authorities list to map member state → supervising NCA. This mapping is stored in the DB and shown on state detail pages. |
 
 ---
@@ -91,7 +93,7 @@
 | 7.2 | Explains the watchlist scope | States exactly: what 150 firms are included, how they were selected, what's excluded, and that absence from the watchlist ≠ authorized. |
 | 7.3 | Explains "not authorized" framing | Explicitly states: "Not found in register" ≠ illegal. Explains evidence-of-absence standard. |
 | 7.4 | Lists primary sources | Names the ESMA CSVs, the Article 93 NCA list, and each NCA register used. Links to each. |
-| 7.5 | Update cadence disclosed | States: ESMA data checked weekly; NCA data checked monthly; firms can submit corrections at any time. |
+| 7.5 | Update cadence disclosed | States: the CASPS + EMTWP ESMA registers are checked automatically every week with changes queued for human review; the site is statically generated and refreshes hourly (not live or real-time); firms can submit corrections at any time. NCA registers are not yet part of the automated weekly job; automated monthly NCA checks are a roadmap item not yet implemented. |
 | 7.6 | Dispute / correction channel | Publishes an email address (or form) for named firms to submit corrections. States a review SLA (e.g., 5 business days). |
 | 7.7 | Absence-of-evidence caveat | Explicitly states: "Absence from this tracker does not mean a firm is authorized." |
 
@@ -108,13 +110,13 @@
 
 ---
 
-## AC-9: Email capture and alerts
+## AC-9: Email capture and weekly digest
 
 | # | Criterion | Pass condition |
 |---|---|---|
 | 9.1 | Capture form present | Email signup form visible above the fold on homepage and on the firm registry. |
-| 9.2 | Signup confirms scope | Confirmation email states: "You'll receive status-change alerts and weekly digests." |
-| 9.3 | Status-change alert | When a firm's status changes, subscribers with that firm in their watchlist receive an email within 24 hours. |
+| 9.2 | Signup confirms scope | Confirmation email states subscribers will receive a weekly email summarising what changed on the EU MiCA register. No per-firm watchlists or firm-specific alerts are promised. |
+| 9.3 | Weekly digest | Confirmed subscribers receive a single weekly digest listing all status changes that occurred that week (old → new status per firm), with a link to the changelog. There are no per-firm watchlists or firm-specific alerts. |
 | 9.4 | No spam | Unsubscribe link present in every email. GDPR-compliant opt-in. |
 
 ---
@@ -123,7 +125,7 @@
 
 | # | Criterion | Pass condition |
 |---|---|---|
-| 10.1 | CSV download | `/api/export.csv` returns the full firm registry with all public fields (firm, category, status, last_verified, source_type, source_url). |
+| 10.1 | CSV download | `/api/export` returns the full firm registry with all public fields (firm, category, status, last_verified, source_type, source_url). |
 | 10.2 | JSON API | `GET /api/firms` returns JSON array of all firm records. `GET /api/firms/:slug` returns a single firm. No auth required for read. |
 | 10.3 | Embeddable widget | A `<script>` embed snippet is available that renders a countdown + headline stat (authorized count / total watchlist) on third-party pages. |
 

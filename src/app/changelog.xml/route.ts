@@ -21,7 +21,7 @@ export async function GET(req: Request) {
   <channel>
     <title>MiCA Tracker, Status Changelog</title>
     <link>${base}</link>
-    <description>Live updates to EU MiCA CASP authorization statuses</description>
+    <description>Updates to EU MiCA licence statuses</description>
     <language>en</language>
     ${items}
   </channel>
