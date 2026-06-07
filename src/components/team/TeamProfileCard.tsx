@@ -10,7 +10,7 @@ export function TeamProfileCard({
   const isFull = variant === 'full'
 
   return (
-    <article className={`card-paper lift rounded-xl ${isFull ? 'p-7 md:p-9' : 'p-6 md:p-7'}`}>
+    <article className={`card-paper rounded-xl ${isFull ? 'p-7 md:p-9' : 'p-6 md:p-7'}`}>
       <div className={`flex ${isFull ? 'flex-col sm:flex-row sm:items-start' : 'items-start'} gap-5`}>
         <div
           aria-hidden="true"

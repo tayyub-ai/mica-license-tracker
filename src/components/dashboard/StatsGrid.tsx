@@ -1,13 +1,11 @@
 import type { DashboardStats } from '@/types/database'
-import { CountUp } from './CountUp'
 
 function StatCard({ label, value, accent }: { label: string; value: number; accent: string }) {
   return (
-    <div className="card-paper lift rounded-xl p-6 relative overflow-hidden">
-      <span className="absolute left-0 top-6 bottom-6 w-0.5 rounded-full" style={{ background: accent }} />
-      <p className="eyebrow mb-3 pl-3">{label}</p>
-      <p className="fig text-5xl pl-3" style={{ color: accent }}>
-        <CountUp value={value} />
+    <div className="card-paper p-6">
+      <p className="eyebrow mb-3">{label}</p>
+      <p className="fig tnum text-5xl" style={{ color: accent }}>
+        {value}
       </p>
     </div>
   )
@@ -29,14 +27,12 @@ export function AtRiskBanner({ stats }: { stats: DashboardStats }) {
   const pct = stats.total > 0 ? Math.round((atRisk / stats.total) * 100) : 0
 
   return (
-    <div className="relative card-paper rounded-xl overflow-hidden">
-      <div className="absolute inset-0 opacity-60" style={{ background: 'radial-gradient(120% 100% at 0% 50%, color-mix(in srgb, var(--coral) 16%, transparent), transparent 55%)' }} />
-      <span className="absolute left-0 top-0 bottom-0 w-1 bg-coral" />
-      <div className="relative px-8 py-7 md:flex items-center justify-between gap-8">
+    <div className="card-paper">
+      <div className="px-8 py-7 md:flex items-center justify-between gap-8">
         <div>
           <p className="eyebrow text-coral mb-2">Still unlicensed</p>
-          <p className="fig text-6xl md:text-7xl text-coral leading-none">
-            <CountUp value={atRisk} />
+          <p className="fig tnum text-6xl md:text-7xl text-coral leading-none">
+            {atRisk}
             <span className="text-2xl text-ink-faint font-sans"> of {stats.total}</span>
           </p>
         </div>

@@ -53,7 +53,7 @@ export function EmailCapture({ variant = 'default' }: { variant?: 'default' | 'c
       <button
         type="submit"
         disabled={state === 'loading'}
-        className="press px-6 py-2.5 rounded-lg bg-gold text-[#0E1422] text-sm font-semibold hover:bg-gold-deep disabled:opacity-50 whitespace-nowrap"
+        className="px-6 py-2.5 rounded-lg bg-gold text-[#0E1422] text-sm font-semibold hover:bg-gold-deep transition-colors disabled:opacity-50 whitespace-nowrap"
       >
         {state === 'loading' ? 'Signing up' : 'Get alerts'}
       </button>

@@ -101,7 +101,9 @@
       "Bash(/usr/bin/curl -s \"https://mica-license-tracker.vercel.app/api/firms\")",
       "Bash(/usr/bin/curl -s -o /dev/null -w \"registry %{http_code}\\\\n\" \"https://mica-license-tracker.vercel.app/firms\")",
       "Bash(/usr/bin/curl -s -o /dev/null -w \"methodology %{http_code}\\\\n\" \"https://mica-license-tracker.vercel.app/methodology\")",
-      "Bash(/usr/bin/curl -s \"https://mica-license-tracker.vercel.app/firms\")"
+      "Bash(/usr/bin/curl -s \"https://mica-license-tracker.vercel.app/firms\")",
+      "Bash(/usr/bin/curl -s -o /dev/null -w \"home %{http_code}\\\\n\" \"https://mica-license-tracker.vercel.app/\")",
+      "Bash(/usr/bin/curl -s -o /dev/null -w \"%{http_code}\\\\n\" \"https://mica-license-tracker.vercel.app/team\")"
     ],
     "deny": [
       "Bash(rm -rf /*)",

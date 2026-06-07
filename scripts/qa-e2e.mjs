@@ -23,11 +23,11 @@ try {
   check('Homepage loads', await page.title() !== '')
   check('Countdown renders', await page.locator('text=Time left').count() > 0)
   check('At-risk banner renders', await page.locator('text=Still unlicensed').count() > 0)
-  check('EU map renders (tiles)', await page.locator('button:has-text("DE")').count() > 0)
+  check('EU map renders (SVG paths)', await page.locator('svg path[aria-label*="Germany"]').count() > 0)
   check('Email capture present', await page.locator('input[type=email]').count() > 0)
 
   // --- Map click → registry filter ---
-  await page.locator('button:has-text("DE")').first().click()
+  await page.locator('svg path[aria-label*="Germany"]').first().click()
   await page.waitForURL('**/firms?state=DE', { timeout: 10000 }).catch(() => {})
   check('Map click navigates to filtered registry', page.url().includes('state=DE'), page.url())
 

@@ -26,10 +26,10 @@ function getTimeLeft(): TimeLeft {
 function Cell({ value, label, pad = true }: { value: number; label: string; pad?: boolean }) {
   return (
     <div className="flex flex-col items-center">
-      <span className="fig text-5xl md:text-6xl leading-none text-ink">
+      <span className="fig text-4xl sm:text-5xl md:text-6xl leading-none text-ink">
         {pad ? String(value).padStart(2, '0') : value}
       </span>
-      <span className="eyebrow mt-2.5 text-[10px]">{label}</span>
+      <span className="eyebrow mt-2.5 text-[9px] sm:text-[10px]">{label}</span>
     </div>
   )
 }
@@ -51,7 +51,7 @@ export function CountdownTimer() {
   }
 
   return (
-    <div className="inline-flex items-end gap-5 md:gap-7 px-7 py-6 card-paper rounded-2xl">
+    <div className="inline-flex items-end gap-2.5 sm:gap-5 md:gap-7 px-4 sm:px-7 py-4 sm:py-6 card-paper rounded-2xl">
       <Cell value={t.days} label="Days" pad={false} />
       <Colon />
       <Cell value={t.hours} label="Hours" />
@@ -64,5 +64,5 @@ export function CountdownTimer() {
 }
 
 function Colon() {
-  return <span className="fig text-3xl md:text-4xl text-rule-bold mb-6 leading-none">:</span>
+  return <span className="fig text-2xl sm:text-3xl md:text-4xl text-rule-bold mb-4 sm:mb-6 leading-none">:</span>
 }
