@@ -4,11 +4,18 @@ import { getDashboardStats } from '@/lib/queries/firms'
 import { getStateCounts } from '@/lib/queries/states'
 import { getChangelog } from '@/lib/queries/changelog'
 import { getFreshness } from '@/lib/queries/freshness'
+import {
+  getLicensedByCountry,
+  getLicensedByCategory,
+  getCumulativeAuthorizations,
+} from '@/lib/queries/analytics'
 import { CountdownTimer } from '@/components/countdown/CountdownTimer'
 import { Freshness } from '@/components/dashboard/Freshness'
 import { EmailCapture } from '@/components/email/EmailCapture'
 import { GeographicMap } from '@/components/map/GeographicMap'
 import { StatusBadge } from '@/components/registry/StatusBadge'
+import { BarChart } from '@/components/charts/BarChart'
+import { AreaChart } from '@/components/charts/AreaChart'
 import type { FirmStatus } from '@/types/database'
 import type { Metadata } from 'next'
 
@@ -17,6 +24,17 @@ export const metadata: Metadata = {
 }
 
 export const revalidate = 3600
+
+const MONTH_NAMES = [
+  'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+]
+
+function monthLabel(ym: string): string {
+  const [year, month] = ym.split('-')
+  const idx = Number(month) - 1
+  return `${MONTH_NAMES[idx] ?? month} ${year}`
+}
 
 function Figure({ label, value, color, caption }: { label: string; value: number; color?: string; caption?: string }) {
   return (
@@ -66,6 +84,64 @@ async function MapSection() {
   return <GeographicMap states={states} />
 }
 
+function Panel({
+  kicker,
+  title,
+  source,
+  children,
+  className,
+}: {
+  kicker: string
+  title: string
+  source?: string
+  children: React.ReactNode
+  className?: string
+}) {
+  return (
+    <div className={`card-paper rounded-xl p-6 ${className ?? ''}`}>
+      <p className="eyebrow mb-1.5">{kicker}</p>
+      <h3 className="font-display text-xl font-semibold text-ink mb-1">{title}</h3>
+      {source && <p className="text-xs text-ink-faint mb-5">{source}</p>}
+      {children}
+    </div>
+  )
+}
+
+async function ByCountryChart() {
+  const data = await getLicensedByCountry()
+  if (data.length === 0) {
+    return <p className="text-sm text-ink-faint">No licensed firms recorded yet.</p>
+  }
+  return (
+    <BarChart
+      data={data.slice(0, 12).map((d) => ({ label: d.name, value: d.count }))}
+    />
+  )
+}
+
+async function ByCategoryChart() {
+  const data = await getLicensedByCategory()
+  if (data.length === 0) {
+    return <p className="text-sm text-ink-faint">No licensed firms recorded yet.</p>
+  }
+  return <BarChart data={data.map((d) => ({ label: d.label, value: d.count }))} />
+}
+
+async function OverTimePanel() {
+  const data = await getCumulativeAuthorizations()
+  if (data.length === 0) return null
+  return (
+    <Panel
+      kicker="Trend"
+      title="Authorisations over time"
+      source="Source: ESMA register · cumulative MiCA authorisations by month"
+      className="lg:col-span-2"
+    >
+      <AreaChart data={data.map((d) => ({ x: monthLabel(d.month), y: d.cumulative }))} />
+    </Panel>
+  )
+}
+
 async function RecentChanges() {
   const entries = await getChangelog(8)
   if (entries.length === 0) return null
@@ -99,6 +175,27 @@ function SectionTitle({ title, href, hrefLabel }: { title: string; href?: string
           {hrefLabel} →
         </Link>
       )}
+    </div>
+  )
+}
+
+const EXPLORE_LINKS: { href: string; title: string; description: string }[] = [
+  { href: '/countries', title: 'Country guides', description: 'Deadlines and registers for each member state.' },
+  { href: '/timeline', title: 'Regulatory timeline', description: 'How MiCA rolled out, milestone by milestone.' },
+  { href: '/learn', title: 'Explainers & glossary', description: 'Plain-English answers to the key questions.' },
+  { href: '/firms', title: 'Full registry', description: 'Every firm we track, with status and source.' },
+]
+
+function ChartSkeleton() {
+  return (
+    <div className="card-paper rounded-xl p-6">
+      <div className="h-3 w-24 bg-paper-3 rounded mb-4 animate-pulse" />
+      <div className="h-5 w-48 bg-paper-3 rounded mb-6 animate-pulse" />
+      <div className="space-y-3">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <div key={i} className="h-2.5 bg-paper-3 rounded-sm animate-pulse" style={{ width: `${90 - i * 12}%` }} />
+        ))}
+      </div>
     </div>
   )
 }
@@ -145,12 +242,60 @@ export default function HomePage() {
         </Suspense>
       </section>
 
+      {/* ===== CHARTS ===== */}
+      <section className="pb-16">
+        <SectionTitle title="The data" />
+        <p className="-mt-4 mb-8 text-ink-soft max-w-2xl">
+          A breakdown of who holds a MiCA authorisation, where they are based and how the numbers have grown.
+        </p>
+        <div className="grid lg:grid-cols-2 gap-6">
+          <Suspense fallback={<ChartSkeleton />}>
+            <Panel
+              kicker="Geography"
+              title="Licensed firms by country"
+              source="Source: ESMA register · top home member states"
+            >
+              <ByCountryChart />
+            </Panel>
+          </Suspense>
+          <Suspense fallback={<ChartSkeleton />}>
+            <Panel
+              kicker="Composition"
+              title="Licensed firms by type"
+              source="Source: ESMA register · firm category"
+            >
+              <ByCategoryChart />
+            </Panel>
+          </Suspense>
+          <Suspense fallback={null}>
+            <OverTimePanel />
+          </Suspense>
+        </div>
+      </section>
+
       {/* ===== RECENT ===== */}
-      <section className="pb-24">
+      <section className="pb-16">
         <SectionTitle title="Latest updates" href="/changelog" hrefLabel="Full changelog" />
         <Suspense fallback={<div className="h-40 animate-pulse" />}>
           <RecentChanges />
         </Suspense>
+      </section>
+
+      {/* ===== EXPLORE ===== */}
+      <section className="pb-24">
+        <div className="border-t border-rule pt-5">
+          <p className="eyebrow mb-6">Explore</p>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-x-10 gap-y-7">
+            {EXPLORE_LINKS.map((link) => (
+              <Link key={link.href} href={link.href} className="group block">
+                <span className="font-display text-lg font-semibold text-ink group-hover:text-gold transition-colors">
+                  {link.title} <span aria-hidden>→</span>
+                </span>
+                <p className="text-sm text-ink-faint mt-1.5 leading-relaxed">{link.description}</p>
+              </Link>
+            ))}
+          </div>
+        </div>
       </section>
     </div>
   )

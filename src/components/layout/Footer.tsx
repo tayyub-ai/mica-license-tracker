@@ -19,6 +19,9 @@ export function Footer() {
             <nav className="flex flex-col gap-2.5">
               {[
                 ['Firm Registry', '/firms'],
+                ['Country Guides', '/countries'],
+                ['Regulatory Timeline', '/timeline'],
+                ['Explainers & Glossary', '/learn'],
                 ['Changelog', '/changelog'],
                 ['Methodology', '/methodology'],
                 ['Team', '/team'],
