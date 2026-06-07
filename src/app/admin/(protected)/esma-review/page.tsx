@@ -1,4 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
+import { ReviewActions } from '@/components/admin/ReviewActions'
+
+export const dynamic = 'force-dynamic'
 
 export default async function ESMAReviewPage() {
   const supabase = await createClient()
@@ -10,7 +13,14 @@ export default async function ESMAReviewPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-xl font-bold text-white">ESMA Review Queue</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-xl font-bold text-white">ESMA Review Queue</h1>
+        <span className="text-sm text-zinc-500">{reviews?.length ?? 0} pending</span>
+      </div>
+      <p className="text-sm text-zinc-500">
+        Weekly ESMA register diffs awaiting human verification. Approving applies an
+        evidence-backed <span className="text-emerald-400">Authorized</span> status; nothing is auto-published.
+      </p>
 
       {(!reviews || reviews.length === 0) ? (
         <p className="text-zinc-500 py-16 text-center">No pending reviews.</p>
@@ -35,10 +45,12 @@ export default async function ESMAReviewPage() {
               <pre className="text-xs text-zinc-400 bg-zinc-800/50 rounded-lg p-3 overflow-auto max-h-40">
                 {JSON.stringify(r.esma_data, null, 2)}
               </pre>
-              <p className="text-xs text-zinc-500">
-                Review this entry and update the relevant firm manually via{' '}
-                <a href="/admin/firms" className="underline underline-offset-2 hover:text-zinc-300">the firm registry</a>.
-              </p>
+              <div className="flex items-center justify-between border-t border-zinc-800 pt-3">
+                <a href="/admin/firms" className="text-xs text-zinc-500 underline underline-offset-2 hover:text-zinc-300">
+                  Or edit manually in the registry
+                </a>
+                <ReviewActions reviewId={r.id} />
+              </div>
             </div>
           ))}
         </div>

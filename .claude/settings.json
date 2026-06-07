@@ -1,5 +1,9 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
   "permissions": {
     "allow": [
       "Read",
@@ -67,7 +71,28 @@
       "Bash(python *)",
       "Bash(python3 *)",
       "Bash(pip *)",
-      "Bash(pip3 *)"
+      "Bash(pip3 *)",
+      "Bash(FILTER_BRANCH_SQUELCH_WARNING=1 git filter-branch -f --env-filter ' *)",
+      "Bash(/Users/tayyub/bin/gh *)",
+      "Bash(gh *)",
+      "Bash(for *)",
+      "Bash(while *)",
+      "Bash(if *)",
+      "Bash(do *)",
+      "Bash(cd *)",
+      "Bash(rm *)",
+      "Bash(rmdir *)",
+      "Bash(ln *)",
+      "Bash(xargs *)",
+      "Bash(tee *)",
+      "Bash(date *)",
+      "Bash(sleep *)",
+      "Bash(npx playwright *)",
+      "Bash(NEXT_PUBLIC_* *)",
+      "Bash(DATABASE_URL=* *)",
+      "Bash(command -v curl)",
+      "Read(//usr/bin/**)",
+      "Bash(SEED_SUPABASE_SECRET=* node *)"
     ],
     "deny": [
       "Bash(rm -rf /*)",
@@ -79,9 +104,5 @@
       "Read(./**/.env.*)"
     ],
     "defaultMode": "acceptEdits"
-  },
-  "attribution": {
-    "commit": "",
-    "pr": ""
   }
 }

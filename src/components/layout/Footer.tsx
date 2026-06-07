@@ -26,6 +26,7 @@ export function Footer() {
               <Link href="/api/firms"   className="text-sm text-zinc-500 hover:text-zinc-300 transition-colors">JSON API</Link>
               <Link href="/api/export"  className="text-sm text-zinc-500 hover:text-zinc-300 transition-colors">CSV Export</Link>
               <Link href="/changelog.xml" className="text-sm text-zinc-500 hover:text-zinc-300 transition-colors">RSS Feed</Link>
+              <Link href="/embed"       className="text-sm text-zinc-500 hover:text-zinc-300 transition-colors">Embed Widget</Link>
             </nav>
           </div>
         </div>

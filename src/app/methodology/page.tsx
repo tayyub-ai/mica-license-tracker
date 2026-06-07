@@ -1,13 +1,48 @@
 import type { Metadata } from 'next'
+import { JsonLd } from '@/components/seo/JsonLd'
 
 export const metadata: Metadata = {
   title: 'Methodology',
   description: 'How MiCA Tracker sources and verifies authorization data. Sources, update cadence, dispute process.',
 }
 
+const FAQ = [
+  {
+    q: 'What does "Authorized" mean on this tracker?',
+    a: 'It means the firm holds a MiCA CASP authorization (or ART/EMT issuer authorization), confirmed via the ESMA interim MiCA register or a named national NCA register, with a direct source link.',
+  },
+  {
+    q: 'Does "Not authorized" mean a firm is operating illegally?',
+    a: 'No. "Not authorized" means "not found in any EU MiCA register as of the verification date." It is evidence of absence, not an accusation of illegality. A firm may be out of scope, in a jurisdiction that has not published its register, or not yet have applied.',
+  },
+  {
+    q: 'What is the 1 July 2026 deadline?',
+    a: 'Under MiCA Article 143(3), firms operating under prior national regimes may continue during a transitional window that ends no later than 1 July 2026 EU-wide, or when their authorization is granted or refused, whichever is sooner. Member states could shorten this window and many did.',
+  },
+  {
+    q: 'How often is the data updated?',
+    a: 'The ESMA register is checked weekly via an automated diff that surfaces changes for human verification before publishing. National NCA registers are checked monthly. Firms can submit corrections at any time.',
+  },
+  {
+    q: 'How can a firm dispute its status?',
+    a: 'Named firms can email corrections@mica-tracker.eu with their legal entity name, LEI or national registration number, the status in question, and a link to the relevant register entry. We aim to review within 5 business days.',
+  },
+]
+
 export default function MethodologyPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <JsonLd
+        data={{
+          '@context': 'https://schema.org',
+          '@type': 'FAQPage',
+          mainEntity: FAQ.map((f) => ({
+            '@type': 'Question',
+            name: f.q,
+            acceptedAnswer: { '@type': 'Answer', text: f.a },
+          })),
+        }}
+      />
       <h1 className="text-3xl font-bold text-white mb-2">Methodology</h1>
       <p className="text-zinc-400 mb-12">How we source, verify, and maintain this data.</p>
 

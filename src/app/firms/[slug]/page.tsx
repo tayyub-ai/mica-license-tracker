@@ -9,6 +9,14 @@ interface Props {
   params: Promise<{ slug: string }>
 }
 
+function safeHostname(url: string): string | null {
+  try {
+    return new URL(url).hostname
+  } catch {
+    return null
+  }
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
   const firm = await getFirmBySlug(slug)
@@ -132,13 +140,13 @@ export default async function FirmDetailPage({ params }: Props) {
                 <dd className="text-white">{firm.member_states?.name ?? firm.home_state_code}</dd>
               </>
             )}
-            {firm.website_url && (
+            {firm.website_url && safeHostname(firm.website_url) && (
               <>
                 <dt className="text-zinc-500">Website</dt>
                 <dd>
                   <a href={firm.website_url} target="_blank" rel="noopener noreferrer"
                     className="text-zinc-300 underline underline-offset-2 hover:text-white">
-                    {new URL(firm.website_url).hostname}
+                    {safeHostname(firm.website_url)}
                   </a>
                 </dd>
               </>

@@ -1,9 +1,11 @@
 import { Suspense } from 'react'
 import Link from 'next/link'
 import { getDashboardStats } from '@/lib/queries/firms'
+import { getStateCounts } from '@/lib/queries/states'
 import { CountdownTimer } from '@/components/countdown/CountdownTimer'
 import { StatsGrid, AtRiskBanner } from '@/components/dashboard/StatsGrid'
 import { EmailCapture } from '@/components/email/EmailCapture'
+import { EuropeTileMap } from '@/components/map/EuropeTileMap'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -25,6 +27,11 @@ async function DashboardSection() {
       )}
     </div>
   )
+}
+
+async function MapSection() {
+  const states = await getStateCounts()
+  return <EuropeTileMap states={states} />
 }
 
 export default function HomePage() {
@@ -80,6 +87,19 @@ export default function HomePage() {
           </div>
         }>
           <DashboardSection />
+        </Suspense>
+      </section>
+
+      {/* EU Map */}
+      <section className="pb-16 space-y-6">
+        <div>
+          <h2 className="text-xl font-semibold text-white">Authorizations by Member State</h2>
+          <p className="text-sm text-zinc-500 mt-1">
+            Where tracked firms hold their home authorization. Hover for each state's transitional deadline; click to filter.
+          </p>
+        </div>
+        <Suspense fallback={<div className="h-64 rounded-xl border border-zinc-800 bg-zinc-900/30 animate-pulse" />}>
+          <MapSection />
         </Suspense>
       </section>
 

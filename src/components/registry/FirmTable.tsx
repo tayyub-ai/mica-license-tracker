@@ -8,12 +8,14 @@ import type { FirmWithStatus } from '@/types/database'
 
 interface Props {
   firms: FirmWithStatus[]
+  initialState?: string
 }
 
-export function FirmTable({ firms }: Props) {
+export function FirmTable({ firms, initialState }: Props) {
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
   const [categoryFilter, setCategoryFilter] = useState('all')
+  const [stateFilter, setStateFilter] = useState(initialState ?? 'all')
 
   const filtered = useMemo(() => {
     const q = search.toLowerCase()
@@ -25,9 +27,10 @@ export function FirmTable({ firms }: Props) {
         f.legal_name.toLowerCase().includes(q)
       const matchStatus = statusFilter === 'all' || status === statusFilter
       const matchCategory = categoryFilter === 'all' || f.category === categoryFilter
-      return matchSearch && matchStatus && matchCategory
+      const matchState = stateFilter === 'all' || f.home_state_code === stateFilter
+      return matchSearch && matchStatus && matchCategory && matchState
     })
-  }, [firms, search, statusFilter, categoryFilter])
+  }, [firms, search, statusFilter, categoryFilter, stateFilter])
 
   return (
     <div className="space-y-4">
@@ -64,7 +67,17 @@ export function FirmTable({ firms }: Props) {
         </select>
       </div>
 
-      <p className="text-sm text-zinc-500">{filtered.length} firms</p>
+      <div className="flex items-center gap-3 flex-wrap">
+        <p className="text-sm text-zinc-500">{filtered.length} firms</p>
+        {stateFilter !== 'all' && (
+          <button
+            onClick={() => setStateFilter('all')}
+            className="text-xs bg-zinc-800 text-zinc-300 border border-zinc-700 px-2.5 py-1 rounded-full hover:bg-zinc-700 transition-colors"
+          >
+            {stateFilter} ✕
+          </button>
+        )}
+      </div>
 
       {/* Table */}
       <div className="rounded-xl border border-zinc-800 overflow-hidden">

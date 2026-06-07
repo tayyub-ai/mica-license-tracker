@@ -3,20 +3,22 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
+import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from '@/lib/constants/site'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
     default: 'MiCA License Tracker — EU Crypto Authorization Status',
     template: '%s | MiCA License Tracker',
   },
-  description:
-    'Track which crypto firms are authorized under the EU MiCA regulation. Live countdown to the 1 July 2026 deadline. Sourced from ESMA and national registers.',
+  description: SITE_DESCRIPTION,
   openGraph: {
     type: 'website',
     locale: 'en_EU',
-    siteName: 'MiCA License Tracker',
+    siteName: SITE_NAME,
+    url: SITE_URL,
   },
   twitter: {
     card: 'summary_large_image',

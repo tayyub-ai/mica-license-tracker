@@ -1,5 +1,7 @@
 import { redirect } from 'next/navigation'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import { LogoutButton } from '@/components/admin/LogoutButton'
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
@@ -10,8 +12,13 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   return (
     <div className="min-h-screen bg-zinc-950">
       <div className="border-b border-zinc-800 bg-zinc-900/50 px-6 py-4 flex items-center justify-between">
-        <p className="font-semibold text-white text-sm">MiCA Tracker Admin</p>
-        <span className="text-xs text-zinc-500">{user.email}</span>
+        <Link href="/admin" className="font-semibold text-white text-sm hover:text-zinc-300 transition-colors">
+          MiCA Tracker Admin
+        </Link>
+        <div className="flex items-center gap-4">
+          <span className="text-xs text-zinc-500">{user.email}</span>
+          <LogoutButton />
+        </div>
       </div>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
         {children}

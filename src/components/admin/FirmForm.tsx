@@ -116,10 +116,11 @@ export function FirmForm({ initialFirmId, initialValues }: Props) {
         .eq('firm_id', firmId)
         .single()
 
-      // Upsert status
+      // Replace status (one row per firm — delete then insert)
+      await supabase.from('firm_statuses').delete().eq('firm_id', firmId)
       const { error: statusErr } = await supabase
         .from('firm_statuses')
-        .upsert({
+        .insert({
           firm_id: firmId,
           status: values.status,
           source_url: values.source_url,
@@ -129,7 +130,7 @@ export function FirmForm({ initialFirmId, initialValues }: Props) {
           notes: values.notes || null,
           out_of_scope_reason: values.out_of_scope_reason || null,
           updated_at: new Date().toISOString(),
-        }, { onConflict: 'firm_id' })
+        })
 
       if (statusErr) throw statusErr
 
