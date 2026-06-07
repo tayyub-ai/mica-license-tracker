@@ -9,7 +9,7 @@ if (!SECRET) { console.error('Set SEED_SUPABASE_SECRET'); process.exit(1) }
 const sb = createClient('https://vaibkrkcdorivvtsnayc.supabase.co', SECRET, { auth: { persistSession: false } })
 
 const NCASP_URL = 'https://www.esma.europa.eu/sites/default/files/2024-12/NCASP.csv'
-const ESMA_NC_URL = 'https://www.esma.europa.eu/publications-and-data/registers-and-data'
+const ESMA_NC_URL = 'https://www.esma.europa.eu/sites/default/files/2024-12/NCASP.csv'
 const TODAY = new Date().toISOString().split('T')[0]
 
 function parseCSV(t) {

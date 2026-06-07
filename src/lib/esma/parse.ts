@@ -1,8 +1,13 @@
 // Shared ESMA interim MiCA register fetching + parsing.
 
 export const ESMA_BASE = 'https://www.esma.europa.eu/sites/default/files/2024-12'
+// Official searchable MiCA register (human-facing, resolves). The interim
+// landing pages 404; the direct CSV files below are the verifiable raw source.
 export const ESMA_REGISTER_URL =
-  'https://www.esma.europa.eu/publications-and-data/interim-mica-register'
+  'https://registers.esma.europa.eu/publication/searchRegister?core=esma_registers_mica'
+export const ESMA_CASPS_CSV = `${ESMA_BASE}/CASPS.csv`
+export const ESMA_EMTWP_CSV = `${ESMA_BASE}/EMTWP.csv`
+export const ESMA_NCASP_CSV = `${ESMA_BASE}/NCASP.csv`
 
 export interface EsmaEntity {
   competent_authority: string
