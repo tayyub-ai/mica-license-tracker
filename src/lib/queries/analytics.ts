@@ -1,4 +1,5 @@
 import { getAllFirms } from '@/lib/queries/firms'
+import { getLiveEsmaFirms } from '@/lib/queries/esma-live'
 import {
   CATEGORY_LABELS,
   SERVICE_LABELS,
@@ -85,6 +86,13 @@ export async function getLicensedByService(): Promise<
     }
   }
 
+  // Fall back to the live ESMA register if the DB has no service data backfilled.
+  if (Object.keys(counts).length === 0) {
+    for (const f of await getLiveEsmaFirms()) {
+      for (const code of f.services) counts[code] = (counts[code] ?? 0) + 1
+    }
+  }
+
   return SERVICE_ORDER.filter((code) => counts[code])
     .map((code) => ({ code, label: SERVICE_LABELS[code] ?? code, count: counts[code] }))
     .sort((a, b) => b.count - a.count)
@@ -105,6 +113,13 @@ export async function getPassportingReach(): Promise<
     if (!isLicensed(firm)) continue
     for (const code of statusOf(firm)?.passport_states ?? []) {
       counts[code] = (counts[code] ?? 0) + 1
+    }
+  }
+
+  // Fall back to the live ESMA register if the DB has no passport data backfilled.
+  if (Object.keys(counts).length === 0) {
+    for (const f of await getLiveEsmaFirms()) {
+      for (const code of f.passportStates) counts[code] = (counts[code] ?? 0) + 1
     }
   }
 

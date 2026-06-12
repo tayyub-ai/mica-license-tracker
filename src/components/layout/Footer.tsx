@@ -20,6 +20,7 @@ export function Footer() {
               {[
                 ['Firm Registry', '/firms'],
                 ['Country Guides', '/countries'],
+                ['Passporting Map', '/passporting'],
                 ['Regulatory Timeline', '/timeline'],
                 ['Explainers & Glossary', '/learn'],
                 ['Changelog', '/changelog'],

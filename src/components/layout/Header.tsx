@@ -6,6 +6,7 @@ import Link from 'next/link'
 const NAV: [string, string][] = [
   ['Registry', '/firms'],
   ['Countries', '/countries'],
+  ['Passporting', '/passporting'],
   ['Timeline', '/timeline'],
   ['Learn', '/learn'],
   ['Changelog', '/changelog'],

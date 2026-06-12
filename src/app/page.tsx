@@ -187,6 +187,12 @@ async function PassportingPanel() {
           color: 'var(--forest)',
         }))}
       />
+      <Link
+        href="/passporting"
+        className="mt-5 inline-block text-sm font-medium text-gold transition-colors hover:text-gold-deep"
+      >
+        Explore the passporting map →
+      </Link>
     </Panel>
   )
 }
@@ -244,6 +250,7 @@ function SectionTitle({ title, href, hrefLabel }: { title: string; href?: string
 }
 
 const EXPLORE_LINKS: { href: string; title: string; description: string }[] = [
+  { href: '/passporting', title: 'Passporting map', description: 'Trace where each licensed firm can operate across the EEA.' },
   { href: '/countries', title: 'Country guides', description: 'Deadlines and registers for each member state.' },
   { href: '/timeline', title: 'Regulatory timeline', description: 'How MiCA rolled out, milestone by milestone.' },
   { href: '/learn', title: 'Explainers & glossary', description: 'Plain-English answers to the key questions.' },
@@ -355,7 +362,7 @@ export default function HomePage() {
       <section className="pb-24">
         <div className="border-t border-rule pt-5">
           <p className="eyebrow mb-6">Explore</p>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-x-10 gap-y-7">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-x-10 gap-y-7">
             {EXPLORE_LINKS.map((link, i) => (
               <Reveal key={link.href} delay={i * 80}>
                 <Link href={link.href} className="group block">

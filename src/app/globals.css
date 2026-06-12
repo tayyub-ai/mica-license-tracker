@@ -160,6 +160,12 @@
   animation: mapFadeIn 0.5s both;
 }
 
+/* Passport arcs draw themselves from origin to destination. */
+@keyframes arcDraw {
+  from { stroke-dashoffset: 1; }
+  to   { stroke-dashoffset: 0; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.001ms !important;
