@@ -149,6 +149,17 @@
   transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
+/* Choropleth countries fade in on load (pure CSS, plays without JS, ends at the
+   server-rendered fill so no-JS users keep the full map). Per-path stagger is
+   set inline via animation-delay. */
+@keyframes mapFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.map-path {
+  animation: mapFadeIn 0.5s both;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.001ms !important;

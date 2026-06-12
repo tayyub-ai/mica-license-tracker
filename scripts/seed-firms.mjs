@@ -33,14 +33,33 @@ function slugify(s) {
     .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 60)
 }
 
-// Heuristic category from name
-function categorize(name) {
-  const n = name.toLowerCase()
+// Extract MiCA service codes from the ac_serviceCode column.
+// "a. providing custody... | c. exchange..." -> ['a','c']
+function parseServiceCodes(raw) {
+  if (!raw) return []
+  return raw.split('|').map((s) => s.trim().match(/^([a-j])\./)).filter(Boolean).map((m) => m[1])
+}
+
+// Extract passported member-state codes from ac_serviceCode_cou ("AT|BE|BG|...").
+function parsePassportStates(raw) {
+  if (!raw) return []
+  return raw.split('|').map((s) => s.trim()).filter((s) => /^[A-Z]{2}$/.test(s))
+}
+
+// Derive a primary category from the authoritative service codes the firm holds,
+// most-distinctive-first. Far more accurate than guessing from the firm name.
+function categoryFromServices(codes, fallbackName = '') {
+  const s = new Set(codes)
+  if (s.has('b') || s.has('c') || s.has('d')) return 'exchange'   // can run a venue / exchange crypto
+  if (s.has('a')) return 'custodian'                              // custody without exchange
+  if (s.has('e') || s.has('f') || s.has('g')) return 'broker'     // order handling / placing
+  if (s.has('h') || s.has('i')) return 'broker'                   // advice / portfolio management
+  if (s.has('j')) return 'wallet_provider'                        // transfer services only
+  // No parseable services — fall back to a light name heuristic.
+  const n = fallbackName.toLowerCase()
   if (/custod|depositar|verwahr|safekeep|vault/.test(n)) return 'custodian'
   if (/wallet/.test(n)) return 'wallet_provider'
-  if (/capital|securities|broker|invest|markets|asset manage|wealth/.test(n)) return 'broker'
-  if (/bank|banca|banco|banque|sparkasse/.test(n)) return 'broker'
-  if (/exchange|trade|trading|dax|bitvavo|coin|crypto|digital asset|bit/.test(n)) return 'exchange'
+  if (/exchange|trade|trading|coin|crypto|digital asset|bit/.test(n)) return 'exchange'
   return 'other'
 }
 
@@ -99,12 +118,15 @@ async function main() {
     const key = lei || legal
     if (!legal || seen.has(key)) continue
     seen.add(key)
+    const services = parseServiceCodes(r[11])
+    const passportStates = parsePassportStates(r[12])
+    const authorizedAt = isoDate(r[9])
     records.push({
       slug: slugify(commercial || legal) + '-' + (lei ? lei.slice(0, 4).toLowerCase() : r[1].toLowerCase()),
       trading_name: commercial || legal,
       legal_name: legal,
       lei: lei || null,
-      category: categorize(commercial + ' ' + legal),
+      category: categoryFromServices(services, commercial + ' ' + legal),
       home_state_code: r[1],
       website_url: (r[7] || '').trim().startsWith('http') ? r[7].trim() : null,
       status: 'authorized',
@@ -112,7 +134,10 @@ async function main() {
       source_type: 'esma_csv',
       confidence: 'high',
       last_verified: TODAY,
-      notes: `Authorized CASP per ESMA interim register (${r[0]}, notified ${isoDate(r[9])}).`,
+      services,
+      passport_states: passportStates,
+      authorized_at: authorizedAt,
+      notes: `Authorized CASP per ESMA interim register (${r[0]}, notified ${authorizedAt}).`,
     })
   }
 
@@ -137,7 +162,10 @@ async function main() {
       source_type: 'esma_csv',
       confidence: 'high',
       last_verified: TODAY,
-      notes: `Authorized EMT/ART issuer per ESMA interim register (${r[0]}).`,
+      services: [],
+      passport_states: [],
+      authorized_at: isoDate(r[8]),
+      notes: `Authorized EMT/ART issuer per ESMA interim register (${r[0]}, notified ${isoDate(r[8])}).`,
     })
   }
 
@@ -158,6 +186,9 @@ async function main() {
       source_type: 'esma_csv',
       confidence: 'high',
       last_verified: TODAY,
+      services: null,
+      passport_states: null,
+      authorized_at: null,
       notes: f.note,
     })
   }
@@ -166,7 +197,8 @@ async function main() {
 
   let ok = 0, fail = 0
   for (const rec of records) {
-    const { status, source_url, source_type, confidence, last_verified, notes, ...firm } = rec
+    const { status, source_url, source_type, confidence, last_verified, notes,
+            services, passport_states, authorized_at, ...firm } = rec
     // upsert firm
     const { data: firmRow, error: fErr } = await sb.from('firms')
       .upsert(firm, { onConflict: 'slug' }).select('id').single()
@@ -175,6 +207,7 @@ async function main() {
     await sb.from('firm_statuses').delete().eq('firm_id', firmRow.id)
     const { error: sErr } = await sb.from('firm_statuses').insert({
       firm_id: firmRow.id, status, source_url, source_type, confidence, last_verified, notes,
+      services, passport_states, authorized_at,
     })
     if (sErr) { console.error('status fail', firm.slug, sErr.message); fail++; continue }
     ok++
@@ -187,6 +220,10 @@ async function main() {
   const counts = {}
   for (const d of dist || []) counts[d.status] = (counts[d.status] || 0) + 1
   console.log('Status distribution:', counts)
+  const { data: cats } = await sb.from('firms').select('category')
+  const catCounts = {}
+  for (const c of cats || []) catCounts[c.category] = (catCounts[c.category] || 0) + 1
+  console.log('Category distribution:', catCounts)
   const { count } = await sb.from('firms').select('*', { count: 'exact', head: true })
   console.log('Total firms:', count)
 }

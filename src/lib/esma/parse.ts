@@ -17,7 +17,29 @@ export interface EsmaEntity {
   commercial_name: string
   website: string | null
   auth_date: string | null
+  services: string[]
+  passport_states: string[]
   kind: 'casp' | 'emt'
+}
+
+// Extract the single-letter MiCA service codes from the pipe-separated
+// ac_serviceCode column, e.g. "a. providing custody... | c. exchange..." -> ['a','c'].
+export function parseServiceCodes(raw: string | undefined): string[] {
+  if (!raw) return []
+  return raw
+    .split('|')
+    .map((s) => s.trim().match(/^([a-j])\./))
+    .filter((m): m is RegExpMatchArray => Boolean(m))
+    .map((m) => m[1])
+}
+
+// Extract passported member-state codes from the pipe-separated ac_serviceCode_cou column.
+export function parsePassportStates(raw: string | undefined): string[] {
+  if (!raw) return []
+  return raw
+    .split('|')
+    .map((s) => s.trim())
+    .filter((s) => /^[A-Z]{2}$/.test(s))
 }
 
 // Minimal RFC-4180-ish CSV parser handling quoted fields and embedded newlines.
@@ -76,6 +98,8 @@ export async function fetchCASPs(): Promise<EsmaEntity[]> {
       commercial_name: (r[5] || legal).trim(),
       website: (r[7] || '').trim().startsWith('http') ? r[7].trim() : null,
       auth_date: isoDate(r[9]),
+      services: parseServiceCodes(r[11]),
+      passport_states: parsePassportStates(r[12]),
       kind: 'casp',
     })
   }
@@ -101,6 +125,8 @@ export async function fetchEMTs(): Promise<EsmaEntity[]> {
       commercial_name: (r[5] || legal).trim(),
       website: (r[7] || '').trim().startsWith('http') ? r[7].trim() : null,
       auth_date: isoDate(r[8]),
+      services: [],
+      passport_states: [],
       kind: 'emt',
     })
   }

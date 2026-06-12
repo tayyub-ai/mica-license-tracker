@@ -7,7 +7,10 @@ import { getFreshness } from '@/lib/queries/freshness'
 import {
   getLicensedByCountry,
   getLicensedByCategory,
+  getLicensedByService,
   getCumulativeAuthorizations,
+  getSourceBreakdown,
+  getPassportingReach,
 } from '@/lib/queries/analytics'
 import { CountdownTimer } from '@/components/countdown/CountdownTimer'
 import { Freshness } from '@/components/dashboard/Freshness'
@@ -16,6 +19,8 @@ import { GeographicMap } from '@/components/map/GeographicMap'
 import { StatusBadge } from '@/components/registry/StatusBadge'
 import { BarChart } from '@/components/charts/BarChart'
 import { AreaChart } from '@/components/charts/AreaChart'
+import { CountUp } from '@/components/motion/CountUp'
+import { Reveal } from '@/components/motion/Reveal'
 import type { FirmStatus } from '@/types/database'
 import type { Metadata } from 'next'
 
@@ -41,7 +46,7 @@ function Figure({ label, value, color, caption }: { label: string; value: number
     <div className="pl-6 sm:pl-8 ml-6 sm:ml-8 border-l border-rule first:pl-0 first:ml-0 first:border-0">
       <p className="eyebrow mb-2">{label}</p>
       <p className="fig text-4xl sm:text-5xl lg:text-6xl leading-none tnum" style={color ? { color } : undefined}>
-        {value}
+        <CountUp value={value} />
       </p>
       {caption && <p className="text-xs text-ink-faint mt-2">{caption}</p>}
     </div>
@@ -119,12 +124,71 @@ async function ByCountryChart() {
   )
 }
 
-async function ByCategoryChart() {
-  const data = await getLicensedByCategory()
-  if (data.length === 0) {
-    return <p className="text-sm text-ink-faint">No licensed firms recorded yet.</p>
+// Prefer the authoritative service-mix (one count per MiCA service a firm holds);
+// fall back to the coarser firm-category split until the ESMA service backfill
+// runs. The panel titles itself honestly for whichever dataset it shows.
+async function CompositionPanel() {
+  const services = await getLicensedByService()
+  if (services.length > 0) {
+    return (
+      <Panel
+        kicker="Composition"
+        title="Crypto-asset services authorised"
+        source="Source: ESMA register · MiCA services held (firms hold several)"
+      >
+        <BarChart
+          data={services.map((d) => ({ label: d.label, value: d.count, color: 'var(--gold)' }))}
+        />
+      </Panel>
+    )
   }
-  return <BarChart data={data.map((d) => ({ label: d.label, value: d.count }))} />
+  const data = await getLicensedByCategory()
+  return (
+    <Panel
+      kicker="Composition"
+      title="Licensed firms by type"
+      source="Source: ESMA register · firm category"
+    >
+      {data.length === 0 ? (
+        <p className="text-sm text-ink-faint">No licensed firms recorded yet.</p>
+      ) : (
+        <BarChart data={data.map((d) => ({ label: d.label, value: d.count }))} />
+      )}
+    </Panel>
+  )
+}
+
+async function SourcingChart() {
+  const data = await getSourceBreakdown()
+  if (data.length === 0) return null
+  return (
+    <BarChart
+      data={data.map((d) => ({ label: d.label, value: d.count, color: 'var(--indigo)' }))}
+    />
+  )
+}
+
+// Inbound passporting reach — renders only once the ESMA passport-state backfill
+// has populated the data; silently absent before then.
+async function PassportingPanel() {
+  const [reach, states] = await Promise.all([getPassportingReach(), getStateCounts()])
+  if (reach.length === 0) return null
+  const nameByCode = new Map(states.map((s) => [s.code, s.name]))
+  return (
+    <Panel
+      kicker="Reach"
+      title="Most-served markets"
+      source="Source: ESMA register · licensed firms passported into each member state"
+    >
+      <BarChart
+        data={reach.slice(0, 12).map((d) => ({
+          label: nameByCode.get(d.code) ?? d.code,
+          value: d.count,
+          color: 'var(--forest)',
+        }))}
+      />
+    </Panel>
+  )
 }
 
 async function OverTimePanel() {
@@ -259,16 +323,22 @@ export default function HomePage() {
             </Panel>
           </Suspense>
           <Suspense fallback={<ChartSkeleton />}>
-            <Panel
-              kicker="Composition"
-              title="Licensed firms by type"
-              source="Source: ESMA register · firm category"
-            >
-              <ByCategoryChart />
-            </Panel>
+            <CompositionPanel />
           </Suspense>
           <Suspense fallback={null}>
             <OverTimePanel />
+          </Suspense>
+          <Suspense fallback={<ChartSkeleton />}>
+            <Panel
+              kicker="Provenance"
+              title="Where the evidence comes from"
+              source="Source type backing each tracked firm's current status"
+            >
+              <SourcingChart />
+            </Panel>
+          </Suspense>
+          <Suspense fallback={null}>
+            <PassportingPanel />
           </Suspense>
         </div>
       </section>
@@ -286,13 +356,15 @@ export default function HomePage() {
         <div className="border-t border-rule pt-5">
           <p className="eyebrow mb-6">Explore</p>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-x-10 gap-y-7">
-            {EXPLORE_LINKS.map((link) => (
-              <Link key={link.href} href={link.href} className="group block">
-                <span className="font-display text-lg font-semibold text-ink group-hover:text-gold transition-colors">
-                  {link.title} <span aria-hidden>→</span>
-                </span>
-                <p className="text-sm text-ink-faint mt-1.5 leading-relaxed">{link.description}</p>
-              </Link>
+            {EXPLORE_LINKS.map((link, i) => (
+              <Reveal key={link.href} delay={i * 80}>
+                <Link href={link.href} className="group block">
+                  <span className="font-display text-lg font-semibold text-ink group-hover:text-gold transition-colors">
+                    {link.title} <span aria-hidden>→</span>
+                  </span>
+                  <p className="text-sm text-ink-faint mt-1.5 leading-relaxed">{link.description}</p>
+                </Link>
+              </Reveal>
             ))}
           </div>
         </div>

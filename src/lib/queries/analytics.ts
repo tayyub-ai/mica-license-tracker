@@ -1,5 +1,10 @@
 import { getAllFirms } from '@/lib/queries/firms'
-import { CATEGORY_LABELS } from '@/lib/constants/deadline'
+import {
+  CATEGORY_LABELS,
+  SERVICE_LABELS,
+  SERVICE_ORDER,
+  SOURCE_TYPE_LABELS,
+} from '@/lib/constants/deadline'
 import type { FirmWithStatus, FirmStatusRow } from '@/types/database'
 
 /**
@@ -62,9 +67,57 @@ export async function getLicensedByCategory(): Promise<
 }
 
 /**
- * Cumulative count of authorizations bucketed by month, derived from the
- * "notified YYYY-MM-DD" substring in licensed firms' status notes.
- * Returns [] if fewer than 4 monthly data points are parseable.
+ * Licensed firms per MiCA crypto-asset service authorised. A firm is counted
+ * once for every service it holds, so this is a service-coverage view (the
+ * counts sum to more than the number of firms). Sourced from the ESMA
+ * ac_serviceCode column. Sorted descending by count.
+ */
+export async function getLicensedByService(): Promise<
+  { code: string; label: string; count: number }[]
+> {
+  const firms = await getAllFirms()
+
+  const counts: Record<string, number> = {}
+  for (const firm of firms) {
+    if (!isLicensed(firm)) continue
+    for (const code of statusOf(firm)?.services ?? []) {
+      counts[code] = (counts[code] ?? 0) + 1
+    }
+  }
+
+  return SERVICE_ORDER.filter((code) => counts[code])
+    .map((code) => ({ code, label: SERVICE_LABELS[code] ?? code, count: counts[code] }))
+    .sort((a, b) => b.count - a.count)
+}
+
+/**
+ * Inbound passporting reach: how many licensed firms have notified the right to
+ * passport INTO each member state. Sourced from the ESMA ac_serviceCode_cou
+ * column. Sorted descending. Powers the passporting map / "most-served markets".
+ */
+export async function getPassportingReach(): Promise<
+  { code: string; count: number }[]
+> {
+  const firms = await getAllFirms()
+
+  const counts: Record<string, number> = {}
+  for (const firm of firms) {
+    if (!isLicensed(firm)) continue
+    for (const code of statusOf(firm)?.passport_states ?? []) {
+      counts[code] = (counts[code] ?? 0) + 1
+    }
+  }
+
+  return Object.entries(counts)
+    .map(([code, count]) => ({ code, count }))
+    .sort((a, b) => b.count - a.count || a.code.localeCompare(b.code))
+}
+
+/**
+ * Cumulative count of authorizations bucketed by month. Prefers the structured
+ * `authorized_at` column from the ESMA register and falls back to the legacy
+ * "notified YYYY-MM-DD" note for any row not yet backfilled.
+ * Returns [] only if fewer than 2 monthly data points are available.
  */
 export async function getCumulativeAuthorizations(): Promise<
   { month: string; cumulative: number }[]
@@ -76,22 +129,48 @@ export async function getCumulativeAuthorizations(): Promise<
 
   for (const firm of firms) {
     if (!isLicensed(firm)) continue
-    const notes = statusOf(firm)?.notes
-    if (!notes) continue
-    const match = notes.match(notifiedRe)
-    if (!match) continue
-    const month = `${match[1]}-${match[2]}`
+    const status = statusOf(firm)
+    let month: string | null = null
+    if (status?.authorized_at) {
+      month = status.authorized_at.slice(0, 7)
+    } else {
+      const match = status?.notes?.match(notifiedRe)
+      if (match) month = `${match[1]}-${match[2]}`
+    }
+    if (!month) continue
     perMonth[month] = (perMonth[month] ?? 0) + 1
   }
 
   const months = Object.keys(perMonth).sort()
-  if (months.length < 4) return []
+  if (months.length < 2) return []
 
   let cumulative = 0
   return months.map((month) => {
     cumulative += perMonth[month]
     return { month, cumulative }
   })
+}
+
+/**
+ * Provenance: how many tracked firms get their current status from each source
+ * type (ESMA register, NCA register, press, …). Demonstrates the evidence base.
+ * Works on existing data — no backfill required.
+ */
+export async function getSourceBreakdown(): Promise<
+  { key: string; label: string; count: number }[]
+> {
+  const firms = await getAllFirms()
+
+  const counts: Record<string, number> = {}
+  for (const firm of firms) {
+    const key = statusOf(firm)?.source_type
+    if (!key) continue
+    counts[key] = (counts[key] ?? 0) + 1
+  }
+
+  return Object.entries(counts)
+    .map(([key, count]) => ({ key, label: SOURCE_TYPE_LABELS[key] ?? key, count }))
+    .sort((a, b) => b.count - a.count)
 }
 
 /**

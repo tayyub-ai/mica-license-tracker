@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState, useCallback } from 'react'
+import { useMemo, useState, useCallback, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { COUNTRY_PATHS, MAP_VIEWBOX } from '@/lib/constants/europe-geo'
 import type { StateWithCount } from '@/lib/queries/states'
@@ -44,6 +44,14 @@ export function GeographicMap({ states }: { states: StateWithCount[] }) {
   const router = useRouter()
   const [hovered, setHovered] = useState<string | null>(null)
   const [selected, setSelected] = useState<string | null>(null)
+  const [tip, setTip] = useState<{ x: number; y: number } | null>(null)
+  const mapRef = useRef<HTMLDivElement | null>(null)
+
+  const trackPointer = useCallback((e: React.MouseEvent) => {
+    const rect = mapRef.current?.getBoundingClientRect()
+    if (!rect) return
+    setTip({ x: e.clientX - rect.left, y: e.clientY - rect.top })
+  }, [])
 
   const byCode = useMemo(() => {
     const m = new Map<string, StateWithCount>()
@@ -78,7 +86,7 @@ export function GeographicMap({ states }: { states: StateWithCount[] }) {
     <div className="overflow-hidden">
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_320px]">
         {/* ── Map column ─────────────────────────────────────────── */}
-        <div className="min-w-0">
+        <div className="min-w-0 relative" ref={mapRef}>
           <svg
             viewBox={MAP_VIEWBOX}
             role="img"
@@ -86,7 +94,7 @@ export function GeographicMap({ states }: { states: StateWithCount[] }) {
             className="block h-auto w-full select-none"
             style={{ overflow: 'visible' }}
           >
-            {ALL_CODES.map((code) => {
+            {ALL_CODES.map((code, i) => {
               const d = COUNTRY_PATHS[code]
               if (!d) return null
               const s = byCode.get(code)
@@ -101,7 +109,7 @@ export function GeographicMap({ states }: { states: StateWithCount[] }) {
                   tabIndex={0}
                   role="button"
                   aria-label={`${name}: ${count} licensed firms`}
-                  className="cursor-pointer outline-offset-0"
+                  className="map-path cursor-pointer outline-offset-0"
                   style={{
                     fill: fillFor(count, max, isActive),
                     stroke: isActive ? 'var(--gold)' : 'var(--rule)',
@@ -109,9 +117,11 @@ export function GeographicMap({ states }: { states: StateWithCount[] }) {
                     strokeLinejoin: 'round',
                     transition: 'fill .2s, stroke .2s',
                     paintOrder: 'stroke',
+                    animationDelay: `${i * 16}ms`,
                   }}
                   onMouseEnter={() => setHovered(code)}
-                  onMouseLeave={() => setHovered(null)}
+                  onMouseMove={trackPointer}
+                  onMouseLeave={() => { setHovered(null); setTip(null) }}
                   onFocus={() => setHovered(code)}
                   onBlur={() => setHovered(null)}
                   onClick={() => {
@@ -131,6 +141,19 @@ export function GeographicMap({ states }: { states: StateWithCount[] }) {
               )
             })}
           </svg>
+
+          {/* Hover tooltip — follows the cursor over the map (desktop pointers). */}
+          {hovered && tip && activeState && (
+            <div
+              className="pointer-events-none absolute z-10 hidden -translate-x-1/2 -translate-y-[calc(100%+12px)] whitespace-nowrap rounded-md border border-rule bg-paper-2 px-3 py-2 shadow-lg lg:block"
+              style={{ left: tip.x, top: tip.y }}
+            >
+              <span className="block fig text-sm leading-tight text-ink">{activeState.name}</span>
+              <span className="block eyebrow mt-0.5 normal-case text-gold">
+                {activeState.authorized_count} licensed · {activeState.total_count} tracked
+              </span>
+            </div>
+          )}
 
           <p className="eyebrow mt-3 normal-case text-ink-faint">
             Source: ESMA register and national authorities.

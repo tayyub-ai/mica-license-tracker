@@ -66,6 +66,9 @@ export interface FirmStatusRow {
   last_verified: string
   notes: string | null
   out_of_scope_reason: string | null
+  services: string[] | null
+  passport_states: string[] | null
+  authorized_at: string | null
   created_at: string
   updated_at: string
   updated_by: string | null
