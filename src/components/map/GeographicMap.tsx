@@ -83,15 +83,15 @@ export function GeographicMap({ states }: { states: StateWithCount[] }) {
   )
 
   return (
-    <div className="overflow-hidden">
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_320px]">
+    <div className="card-paper overflow-hidden rounded-2xl p-5 sm:p-8 lg:p-10">
+      <div className="grid grid-cols-1 gap-x-10 gap-y-8 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-center">
         {/* ── Map column ─────────────────────────────────────────── */}
         <div className="min-w-0 relative" ref={mapRef}>
           <svg
             viewBox={MAP_VIEWBOX}
             role="img"
             aria-label="Map of EU and EEA countries by number of licensed crypto firms"
-            className="block h-auto w-full select-none"
+            className="mx-auto block h-auto w-full max-w-[480px] select-none lg:max-w-[680px]"
             style={{ overflow: 'visible' }}
           >
             {ALL_CODES.map((code, i) => {
@@ -194,7 +194,7 @@ export function GeographicMap({ states }: { states: StateWithCount[] }) {
 
         {/* ── Detail panel (desktop) ─────────────────────────────── */}
         <aside className="hidden lg:block">
-          <div className="card-paper rounded-xl p-6 lg:sticky lg:top-20">
+          <div className="rounded-xl border border-rule bg-paper-3 p-6 lg:sticky lg:top-24">
             {activeState ? (
               <DetailCard
                 state={activeState}

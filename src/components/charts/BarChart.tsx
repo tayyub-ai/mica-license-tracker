@@ -37,7 +37,7 @@ export function BarChart({ data, max, valueFormat }: BarChartProps) {
         return (
           <div
             key={`${d.label}-${i}`}
-            className="grid grid-cols-[minmax(0,7.5rem)_1fr_auto] sm:grid-cols-[minmax(0,9rem)_1fr_auto] items-center gap-3 sm:gap-4 py-2.5 border-b border-rule"
+            className="grid grid-cols-[minmax(0,8rem)_1fr_auto] sm:grid-cols-[minmax(0,10.5rem)_1fr_auto] items-center gap-3 sm:gap-4 py-2.5 border-b border-rule"
           >
             <span className="text-[13px] sm:text-sm text-ink-soft truncate" title={d.label}>
               {d.label}

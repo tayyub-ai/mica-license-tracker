@@ -158,13 +158,55 @@ async function CompositionPanel() {
   )
 }
 
-async function SourcingChart() {
+const SOURCE_COLORS = ['var(--indigo)', 'var(--slate)', 'var(--ochre)', 'var(--forest)', 'var(--coral)']
+
+async function ProvenancePanel() {
   const data = await getSourceBreakdown()
   if (data.length === 0) return null
+  const total = data.reduce((sum, d) => sum + d.count, 0) || 1
   return (
-    <BarChart
-      data={data.map((d) => ({ label: d.label, value: d.count, color: 'var(--indigo)' }))}
-    />
+    <Panel
+      kicker="Provenance"
+      title="Where the evidence comes from"
+      source="The primary source backing every tracked firm’s current status"
+    >
+      {/* Stacked proportion bar */}
+      <div className="mt-1 flex h-3.5 w-full overflow-hidden rounded-full border border-rule">
+        {data.map((d, i) => (
+          <div
+            key={d.key}
+            style={{ width: `${(d.count / total) * 100}%`, backgroundColor: SOURCE_COLORS[i % SOURCE_COLORS.length] }}
+            title={`${d.label}: ${d.count}`}
+          />
+        ))}
+      </div>
+
+      {/* Legend */}
+      <ul className="mt-7 space-y-3.5">
+        {data.map((d, i) => (
+          <li key={d.key} className="flex items-center gap-3 border-b border-rule pb-3.5 last:border-0">
+            <span
+              className="h-2.5 w-2.5 shrink-0 rounded-sm"
+              style={{ backgroundColor: SOURCE_COLORS[i % SOURCE_COLORS.length] }}
+            />
+            <span className="flex-1 text-sm text-ink-soft">{d.label}</span>
+            <span className="cd-cell text-sm tabular-nums text-ink">{d.count.toLocaleString('en-GB')}</span>
+            <span className="eyebrow w-9 text-right tabular-nums">{Math.round((d.count / total) * 100)}%</span>
+          </li>
+        ))}
+      </ul>
+
+      <p className="mt-6 border-t border-rule pt-5 text-sm leading-relaxed text-ink-soft">
+        Every status is traced to a primary source — the official ESMA register first, and national registers where
+        ESMA is silent. Nothing here is inferred.
+      </p>
+      <Link
+        href="/methodology"
+        className="mt-4 inline-block text-sm font-medium text-gold transition-colors hover:text-gold-deep"
+      >
+        How we verify →
+      </Link>
+    </Panel>
   )
 }
 
@@ -181,7 +223,7 @@ async function PassportingPanel() {
       source="Source: ESMA register · licensed firms passported into each member state"
     >
       <BarChart
-        data={reach.slice(0, 12).map((d) => ({
+        data={reach.slice(0, 8).map((d) => ({
           label: nameByCode.get(d.code) ?? d.code,
           value: d.count,
           color: 'var(--forest)',
@@ -253,7 +295,7 @@ const EXPLORE_LINKS: { href: string; title: string; description: string }[] = [
   { href: '/passporting', title: 'Passporting map', description: 'Trace where each licensed firm can operate across the EEA.' },
   { href: '/countries', title: 'Country guides', description: 'Deadlines and registers for each member state.' },
   { href: '/timeline', title: 'Regulatory timeline', description: 'How MiCA rolled out, milestone by milestone.' },
-  { href: '/learn', title: 'Explainers & glossary', description: 'Plain-English answers to the key questions.' },
+  { href: '/learn', title: 'Explainers', description: 'Plain-English answers to the key questions.' },
   { href: '/firms', title: 'Full registry', description: 'Every firm we track, with status and source.' },
 ]
 
@@ -336,13 +378,7 @@ export default function HomePage() {
             <OverTimePanel />
           </Suspense>
           <Suspense fallback={<ChartSkeleton />}>
-            <Panel
-              kicker="Provenance"
-              title="Where the evidence comes from"
-              source="Source type backing each tracked firm's current status"
-            >
-              <SourcingChart />
-            </Panel>
+            <ProvenancePanel />
           </Suspense>
           <Suspense fallback={null}>
             <PassportingPanel />
@@ -359,7 +395,7 @@ export default function HomePage() {
       </section>
 
       {/* ===== EXPLORE ===== */}
-      <section className="pb-24">
+      <section className="pb-20">
         <div className="border-t border-rule pt-5">
           <p className="eyebrow mb-6">Explore</p>
           <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-x-10 gap-y-7">

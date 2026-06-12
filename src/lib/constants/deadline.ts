@@ -32,13 +32,13 @@ export const CATEGORY_LABELS: Record<string, string> = {
 // The ten MiCA crypto-asset services (Annex I / Article 3) a CASP can be
 // authorised for. Keys are the single-letter service codes ESMA publishes.
 export const SERVICE_LABELS: Record<string, string> = {
-  a: 'Custody & administration',
+  a: 'Custody & admin',
   b: 'Trading platform',
   c: 'Exchange for funds',
-  d: 'Crypto-to-crypto exchange',
+  d: 'Crypto-to-crypto',
   e: 'Order execution',
   f: 'Placing',
-  g: 'Reception & transmission of orders',
+  g: 'Order reception',
   h: 'Advice',
   i: 'Portfolio management',
   j: 'Transfer services',
